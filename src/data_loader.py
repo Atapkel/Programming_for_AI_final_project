@@ -2,15 +2,17 @@
 
 Sources:
     - USD/KZT daily official rate: National Bank of Kazakhstan (nationalbank.kz)
+    - NBK base rate decisions (2015+): nationalbank.kz decision schedule pages
+    - Monthly CPI index (2005+): IMF CPI dataset (api.imf.org)
     - Brent oil price, daily: FRED (series DCOILBRENTEU)
     - Annual macro indicators: World Bank API
-    - NBK base rate: entered by hand into data/raw/base_rate.csv (no machine-readable source)
 
 Usage:
     python -m src.data_loader            # download only missing files
     python -m src.data_loader --force    # download everything again
 """
 
+import html
 import json
 import re
 import sys
@@ -25,10 +27,12 @@ import requests
 RAW_DIR = Path(__file__).resolve().parent.parent / "data" / "raw"
 START_YEAR = 2000
 
-NBK_URL = (
+NBK_RATES_URL = (
     "https://nationalbank.kz/ru/exchangerates/ezhednevnye-oficialnye-rynochnye-kursy-valyut/report"
 )
 NBK_USD_CODE = "5"  # internal NBK id for USD in the report form
+NBK_BASE_RATE_URL = "https://nationalbank.kz/en/news/grafik-prinyatiya-resheniy-po-bazovoy-stavke"
+IMF_CPI_URL = "https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.STA/CPI/%2B/KAZ.CPI._T.IX.M"
 FRED_URL = "https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}"
 WB_URL = "https://api.worldbank.org/v2/country/KZ/indicator/{code}?format=json&per_page=200"
 
@@ -49,11 +53,11 @@ NBK_ROW_RE = re.compile(
 )
 
 
-def fetch(url, params=None, retries=3):
+def fetch(url, params=None, headers=None, retries=3):
     """GET a URL with a few retries; return the response text."""
     for attempt in range(1, retries + 1):
         try:
-            resp = requests.get(url, params=params, timeout=60)
+            resp = requests.get(url, params=params, headers=headers, timeout=60)
             resp.raise_for_status()
             return resp.text
         except requests.RequestException as err:
@@ -61,6 +65,17 @@ def fetch(url, params=None, retries=3):
             if attempt == retries:
                 raise
             time.sleep(2 * attempt)
+
+
+def html_table_rows(page):
+    """Return every <tr> of an HTML page as a list of clean cell strings."""
+    rows = []
+    for tr in re.findall(r"<tr[^>]*>(.*?)</tr>", page, re.S):
+        cells = re.findall(r"<td[^>]*>(.*?)</td>", tr, re.S)
+        # remove tags without adding spaces: NBK sometimes writes 10.03<span>.2021</span>
+        cells = [re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", "", c))).strip() for c in cells]
+        rows.append(cells)
+    return rows
 
 
 def download_usd_kzt(start_year=START_YEAR, end_year=None):
@@ -73,8 +88,8 @@ def download_usd_kzt(start_year=START_YEAR, end_year=None):
             "beginDate": f"01.01.{year}",
             "endDate": f"31.12.{year}",
         }
-        html = fetch(NBK_URL, params=params)
-        year_rows = NBK_ROW_RE.findall(html)
+        page = fetch(NBK_RATES_URL, params=params)
+        year_rows = NBK_ROW_RE.findall(page)
         print(f"  USD/KZT {year}: {len(year_rows)} days")
         rows.extend(year_rows)
 
@@ -82,6 +97,42 @@ def download_usd_kzt(start_year=START_YEAR, end_year=None):
     df["date"] = pd.to_datetime(df["date"])
     df["rate"] = df["rate"].str.replace(",", ".").astype(float) / df["quantity"].astype(int)
     return df[["date", "rate"]].drop_duplicates("date").sort_values("date")
+
+
+def download_base_rate():
+    """NBK base rate decisions from the yearly 'decision making schedule' tables.
+
+    Each row: effective date, base rate, corridor. Future meetings have no rate
+    yet and are skipped.
+    """
+    index_page = fetch(NBK_BASE_RATE_URL)
+    year_pages = dict(re.findall(r'/rubrics/(\d+)">\s*(\d{4})\s*<', index_page))
+    records = []
+    for rubric_id, year in sorted(year_pages.items(), key=lambda item: item[1]):
+        page = fetch(f"{NBK_BASE_RATE_URL}/rubrics/{rubric_id}")
+        count = 0
+        for cells in html_table_rows(page):
+            if len(cells) < 2:
+                continue
+            day = re.search(r"\d{2}\.\d{2}\.\d{4}", cells[0])
+            rate = re.search(r"\d+(?:[.,]\d+)?", cells[1])
+            if day and rate:
+                records.append({"date": day.group(), "rate": float(rate.group().replace(",", "."))})
+                count += 1
+        print(f"  base rate {year}: {count} decisions")
+
+    df = pd.DataFrame(records)
+    df["date"] = pd.to_datetime(df["date"], format="%d.%m.%Y")
+    return df.drop_duplicates("date").sort_values("date")
+
+
+def download_cpi_monthly():
+    """Monthly consumer price index for Kazakhstan (2020 = 100) from the IMF."""
+    text = fetch(IMF_CPI_URL, headers={"Accept": "application/vnd.sdmx.data+csv;version=1.0.0"})
+    raw = pd.read_csv(StringIO(text), usecols=["TIME_PERIOD", "OBS_VALUE"])
+    df = raw.dropna().rename(columns={"TIME_PERIOD": "date", "OBS_VALUE": "cpi_index"})
+    df["date"] = pd.to_datetime(df["date"].str.replace("-M", "-"), format="%Y-%m")
+    return df.sort_values("date")
 
 
 def download_brent():
@@ -110,22 +161,6 @@ def download_world_bank(indicators=WORLD_BANK_INDICATORS):
     return pd.DataFrame(records).sort_values(["indicator", "year"])
 
 
-def load_base_rate(path=RAW_DIR / "base_rate.csv"):
-    """Read the hand-entered NBK base rate history (date, rate).
-
-    The NBK site only shows this as a web page, so the team fills the CSV
-    from https://nationalbank.kz/ru/page/bazovaya-stavka-dkp-functions .
-    """
-    if not path.exists():
-        pd.DataFrame(columns=["date", "rate"]).to_csv(path, index=False)
-        print(f"  created empty template {path.name}: fill in decision dates and rates")
-        return pd.DataFrame(columns=["date", "rate"])
-    df = pd.read_csv(path, parse_dates=["date"])
-    if df.empty:
-        print(f"  {path.name} is still empty: fill it in by hand")
-    return df
-
-
 def save_if_needed(name, download_func, force=False):
     """Run download_func and save to data/raw/<name>.csv unless the file exists."""
     path = RAW_DIR / f"{name}.csv"
@@ -135,7 +170,7 @@ def save_if_needed(name, download_func, force=False):
     print(f"[download] {name}")
     try:
         df = download_func()
-    except (requests.RequestException, ValueError) as err:
+    except (requests.RequestException, ValueError, KeyError) as err:
         print(f"[error] {name}: {err}")
         return
     df.to_csv(path, index=False)
@@ -144,10 +179,15 @@ def save_if_needed(name, download_func, force=False):
 
 def download_all(force=False):
     RAW_DIR.mkdir(parents=True, exist_ok=True)
-    save_if_needed("usd_kzt_daily", download_usd_kzt, force)
-    save_if_needed("brent_daily", download_brent, force)
-    save_if_needed("world_bank_annual", download_world_bank, force)
-    load_base_rate()
+    sources = {
+        "usd_kzt_daily": download_usd_kzt,
+        "base_rate": download_base_rate,
+        "cpi_monthly": download_cpi_monthly,
+        "brent_daily": download_brent,
+        "world_bank_annual": download_world_bank,
+    }
+    for name, func in sources.items():
+        save_if_needed(name, func, force)
 
 
 if __name__ == "__main__":
