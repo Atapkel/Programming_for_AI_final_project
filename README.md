@@ -12,5 +12,6 @@ pip install -r requirements.txt
 streamlit run app/main.py
 ```
 
-Only the homepage is available. Data Analysis, Visualization, and Predictions
-are navigation placeholders for future pages.
+Use the sidebar to open Home, Data Analysis, Visualization, or Predictions.
+Analysis and interactive charts use the existing CSV files in `data/raw/`.
+Predictions shows a coming-soon overview until models are available.

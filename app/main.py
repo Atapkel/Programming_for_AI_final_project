@@ -2,6 +2,10 @@
 
 import streamlit as st
 
+from pages.analysis import show_analysis
+from pages.predictions import show_predictions
+from pages.visualization import show_visualization
+
 
 st.set_page_config(
     page_title="Kazakhstan Economy | Programming for AI",
@@ -14,18 +18,27 @@ with st.sidebar:
     st.caption("Final project")
     st.divider()
     st.subheader("Navigation")
-    st.button("Home", type="primary", width="stretch")
-    # These sections are placeholders until their pages are implemented.
-    for page in ("Data Analysis", "Visualization", "Predictions"):
-        st.button(page, disabled=True, width="stretch")
-    st.caption("More pages coming soon.")
+    page = st.radio(
+        "Page", ["Home", "Data Analysis", "Visualization", "Predictions"],
+        label_visibility="collapsed",
+    )
+
+if page == "Data Analysis":
+    show_analysis()
+    st.stop()
+if page == "Visualization":
+    show_visualization()
+    st.stop()
+if page == "Predictions":
+    show_predictions()
+    st.stop()
 
 st.caption("PROGRAMMING FOR AI · FINAL PROJECT")
 st.title("Kazakhstan Economy Explorer")
 st.write(
     "A project exploring Kazakhstan's economy through USD/KZT exchange rates, "
     "inflation, interest rates, oil prices, and annual economic indicators. "
-    "Future sections will bring together data analysis, visualizations, and predictions."
+    "Explore the datasets and visualizations, with predictions planned for a future update."
 )
 st.divider()
 
@@ -55,6 +68,6 @@ for column, (title, description) in zip(st.columns(3), cards):
             st.write(description)
 
 st.info(
-    "You're on the project homepage. Data Analysis, Visualization, and "
-    "Predictions are planned for a future update."
+    "Choose Data Analysis or Visualization in the sidebar to explore the data. "
+    "Prediction functionality is coming soon."
 )
