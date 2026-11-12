@@ -1,4 +1,4 @@
-"""Homepage for the Programming for AI final project."""
+"""Homepage for the Programming for AI final project. data exploration and visualization."""
 
 import streamlit as st
 
