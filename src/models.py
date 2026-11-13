@@ -111,16 +111,24 @@ def select_arima_order(y, cfg, max_pq=2):
     return best_order
 
 
-def fit_sarima(y, cfg, order):
+_WARM_START = {}  # last fitted parameters per (target, order): speeds up backtest refits
+
+
+def fit_sarima(y, cfg, order, warm_key=None):
     y_fit = np.log(y) if cfg["log"] else y
+    start_params = _WARM_START.get(warm_key)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         try:
-            return SARIMAX(y_fit, order=order, seasonal_order=cfg["seasonal_order"]).fit(disp=False)
+            res = SARIMAX(y_fit, order=order, seasonal_order=cfg["seasonal_order"]).fit(
+                disp=False, start_params=start_params)
         except (np.linalg.LinAlgError, ValueError):
             # numerical failure on some windows: refit without the stationarity constraints
-            return SARIMAX(y_fit, order=order, seasonal_order=cfg["seasonal_order"],
-                           enforce_stationarity=False, enforce_invertibility=False).fit(disp=False)
+            res = SARIMAX(y_fit, order=order, seasonal_order=cfg["seasonal_order"],
+                          enforce_stationarity=False, enforce_invertibility=False).fit(disp=False)
+    if warm_key is not None:
+        _WARM_START[warm_key] = res.params
+    return res
 
 
 def fit_ets(y, cfg):
@@ -145,7 +153,8 @@ def model_seasonal_naive(history, *_):
 
 
 def model_sarima(history, X_train, reg_train, x_next, cfg, order):
-    forecast = fit_sarima(history.reset_index(drop=True), cfg, order).forecast(1)
+    model = fit_sarima(history.reset_index(drop=True), cfg, order, warm_key=(cfg["column"], order))
+    forecast = model.forecast(1)
     return float(undo_log(np.asarray(forecast), cfg)[0])
 
 

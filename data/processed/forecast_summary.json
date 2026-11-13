@@ -1,0 +1,32 @@
+{
+  "inflation_mom": {
+    "arima_order": [
+      2,
+      0,
+      2
+    ],
+    "best_model": "sarima",
+    "test_period": [
+      "2023-10-01",
+      "2026-09-01"
+    ],
+    "projected_12m_inflation_pct": {
+      "ets": 8.61,
+      "naive": 6.65,
+      "sarima": 9.5,
+      "seasonal_naive": 9.24
+    }
+  },
+  "usd_kzt": {
+    "arima_order": [
+      1,
+      1,
+      0
+    ],
+    "best_model": "gradient_boosting",
+    "test_period": [
+      "2023-11-01",
+      "2026-10-01"
+    ]
+  }
+}

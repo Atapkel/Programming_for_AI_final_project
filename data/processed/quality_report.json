@@ -84,11 +84,11 @@
   "csv_vs_parquet_usd_kzt_daily": {
     "csv": {
       "size_kb": 228.6,
-      "read_ms": 1.93
+      "read_ms": 2.2
     },
     "parquet": {
       "size_kb": 117.7,
-      "read_ms": 16.02
+      "read_ms": 5.16
     }
   }
 }
