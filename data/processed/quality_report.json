@@ -1,0 +1,94 @@
+{
+  "raw_audit": {
+    "usd_kzt": {
+      "rows": 9758,
+      "start": "2000-01-01",
+      "end": "2026-11-12",
+      "missing_values": 0,
+      "duplicate_dates": 0,
+      "iqr_outliers": 0,
+      "min": 117.25,
+      "median": 154.09,
+      "max": 549.15,
+      "missing_periods": 55
+    },
+    "brent": {
+      "rows": 6501,
+      "start": "2000-01-04",
+      "end": "2026-11-03",
+      "missing_values": 0,
+      "duplicate_dates": 0,
+      "iqr_outliers": 0,
+      "min": 9.12,
+      "median": 68.3,
+      "max": 143.95,
+      "missing_periods": 500
+    },
+    "cpi": {
+      "rows": 261,
+      "start": "2005-01-01",
+      "end": "2026-09-01",
+      "missing_values": 0,
+      "duplicate_dates": 0,
+      "iqr_outliers": 2,
+      "min": 28.53,
+      "median": 71.27,
+      "max": 186.8,
+      "missing_periods": 0
+    },
+    "base_rate": {
+      "rows": 92,
+      "start": "2015-09-02",
+      "end": "2026-10-27",
+      "missing_values": 0,
+      "duplicate_dates": 0,
+      "iqr_outliers": 0,
+      "min": 9.0,
+      "median": 12.75,
+      "max": 18.0
+    }
+  },
+  "usd_kzt_filled_days": 55,
+  "memory_optimization": {
+    "usd_kzt_daily": {
+      "before_kb": 163.0,
+      "after_kb": 124.7,
+      "saved_pct": 23.5
+    },
+    "brent_daily": {
+      "before_kb": 101.7,
+      "after_kb": 76.3,
+      "saved_pct": 25.0
+    },
+    "cpi_monthly": {
+      "before_kb": 8.3,
+      "after_kb": 5.2,
+      "saved_pct": 36.9
+    },
+    "base_rate": {
+      "before_kb": 3.3,
+      "after_kb": 1.7,
+      "saved_pct": 49.0
+    },
+    "world_bank_annual": {
+      "before_kb": 12.4,
+      "after_kb": 2.0,
+      "saved_pct": 84.0
+    },
+    "monthly_macro": {
+      "before_kb": 36.7,
+      "after_kb": 15.9,
+      "saved_pct": 56.6
+    }
+  },
+  "csv_vs_parquet_usd_kzt_daily": {
+    "csv": {
+      "size_kb": 228.6,
+      "read_ms": 1.93
+    },
+    "parquet": {
+      "size_kb": 117.7,
+      "read_ms": 16.02
+    }
+  }
+}

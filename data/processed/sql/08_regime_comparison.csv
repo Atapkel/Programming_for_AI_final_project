@@ -1,0 +1,4 @@
+regime,first_month,last_month,n_months,avg_fx_change_pct,avg_abs_fx_change_pct,avg_inflation_yoy,avg_base_rate
+managed_rate,2000-01,2015-07,187,0.18,0.73,8.45,
+free_float,2015-08,2022-01,78,1.16,2.18,8.09,10.6
+post_2022_shock,2022-02,2026-10,57,0.12,2.13,12.2,15.91

@@ -1,0 +1,167 @@
+{
+  "stationarity": {
+    "usd_kzt_avg (level)": {
+      "adf_p": 0.9142,
+      "kpss_p": 0.01,
+      "verdict": "non-stationary"
+    },
+    "usd_kzt_change_pct": {
+      "adf_p": 0.0,
+      "kpss_p": 0.1,
+      "verdict": "stationary"
+    },
+    "cpi_index (level)": {
+      "adf_p": 1.0,
+      "kpss_p": 0.01,
+      "verdict": "non-stationary"
+    },
+    "inflation_mom": {
+      "adf_p": 0.0,
+      "kpss_p": 0.1,
+      "verdict": "stationary"
+    },
+    "inflation_yoy": {
+      "adf_p": 0.0882,
+      "kpss_p": 0.1,
+      "verdict": "inconclusive"
+    },
+    "brent_avg (level)": {
+      "adf_p": 0.1738,
+      "kpss_p": 0.01,
+      "verdict": "non-stationary"
+    },
+    "brent_change_pct": {
+      "adf_p": 0.0,
+      "kpss_p": 0.1,
+      "verdict": "stationary"
+    }
+  },
+  "inflation_seasonal_strength": 0.123,
+  "inflation_mom_by_calendar_month": {
+    "1": 0.854,
+    "2": 0.928,
+    "3": 0.769,
+    "4": 0.699,
+    "5": 0.622,
+    "6": 0.507,
+    "7": 0.443,
+    "8": 0.409,
+    "9": 0.638,
+    "10": 1.085,
+    "11": 1.012,
+    "12": 0.797
+  },
+  "pass_through_corr_by_lag": {
+    "0": 0.184,
+    "1": 0.31,
+    "2": 0.29,
+    "3": 0.155,
+    "4": 0.057,
+    "5": -0.003,
+    "6": -0.04
+  },
+  "chow_tests_inflation_mom": {
+    "2009 devaluation": {
+      "mean_before": 0.867,
+      "mean_after": 0.694,
+      "f_stat": 3.39,
+      "p_value": 0.0666
+    },
+    "2014 devaluation": {
+      "mean_before": 0.693,
+      "mean_after": 0.752,
+      "f_stat": 0.63,
+      "p_value": 0.429
+    },
+    "Tenge float": {
+      "mean_before": 0.648,
+      "mean_after": 0.803,
+      "f_stat": 4.45,
+      "p_value": 0.0359
+    },
+    "2022 shock": {
+      "mean_before": 0.663,
+      "mean_after": 0.967,
+      "f_stat": 11.85,
+      "p_value": 0.0007
+    }
+  },
+  "chow_tests_fx_change": {
+    "2009 devaluation": {
+      "mean_before": 0.061,
+      "mean_after": 0.582,
+      "f_stat": 2.42,
+      "p_value": 0.121
+    },
+    "2014 devaluation": {
+      "mean_before": 0.145,
+      "mean_after": 0.693,
+      "f_stat": 2.98,
+      "p_value": 0.0851
+    },
+    "Tenge float": {
+      "mean_before": 0.233,
+      "mean_after": 0.645,
+      "f_stat": 1.64,
+      "p_value": 0.2016
+    },
+    "2022 shock": {
+      "mean_before": 0.466,
+      "mean_after": 0.113,
+      "f_stat": 0.71,
+      "p_value": 0.3995
+    }
+  },
+  "corr_levels_2016": {
+    "usd_kzt_avg": {
+      "usd_kzt_avg": 1.0,
+      "brent_avg": 0.49,
+      "inflation_yoy": 0.32,
+      "base_rate": 0.62
+    },
+    "brent_avg": {
+      "usd_kzt_avg": 0.49,
+      "brent_avg": 1.0,
+      "inflation_yoy": 0.24,
+      "base_rate": 0.39
+    },
+    "inflation_yoy": {
+      "usd_kzt_avg": 0.32,
+      "brent_avg": 0.24,
+      "inflation_yoy": 1.0,
+      "base_rate": 0.73
+    },
+    "base_rate": {
+      "usd_kzt_avg": 0.62,
+      "brent_avg": 0.39,
+      "inflation_yoy": 0.73,
+      "base_rate": 1.0
+    }
+  },
+  "corr_changes_2016": {
+    "usd_kzt_change": {
+      "usd_kzt_change": 1.0,
+      "brent_change": -0.31,
+      "inflation_mom": 0.16,
+      "base_rate_change": 0.08
+    },
+    "brent_change": {
+      "usd_kzt_change": -0.31,
+      "brent_change": 1.0,
+      "inflation_mom": -0.08,
+      "base_rate_change": 0.01
+    },
+    "inflation_mom": {
+      "usd_kzt_change": 0.16,
+      "brent_change": -0.08,
+      "inflation_mom": 1.0,
+      "base_rate_change": 0.14
+    },
+    "base_rate_change": {
+      "usd_kzt_change": 0.08,
+      "brent_change": 0.01,
+      "inflation_mom": 0.14,
+      "base_rate_change": 1.0
+    }
+  }
+}
