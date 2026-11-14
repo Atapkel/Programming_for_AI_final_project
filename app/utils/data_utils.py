@@ -1,5 +1,6 @@
 """Shared local dataset selection and cached loading."""
 
+import json
 import sys
 from pathlib import Path
 
@@ -29,6 +30,46 @@ def load_dataset(name):
     if "date" in data.columns:
         data["date"] = pd.to_datetime(data["date"], errors="coerce")
     return data
+
+
+PROCESSED_DIR = RAW_DIR.parent / "processed"
+MODEL_FILES = (
+    "forecasts.parquet", "backtest_predictions.parquet", "model_metrics.csv",
+    "errors_by_year.csv", "forecast_summary.json", "monthly_macro.parquet",
+)
+
+
+@st.cache_data
+def load_model_results():
+    """Load the saved outputs of src/models.py; return None if they are missing."""
+    if not all((PROCESSED_DIR / name).exists() for name in MODEL_FILES):
+        return None
+    with open(PROCESSED_DIR / "forecast_summary.json", encoding="utf-8") as file:
+        summary = json.load(file)
+    return {
+        "forecasts": pd.read_parquet(PROCESSED_DIR / "forecasts.parquet"),
+        "backtest": pd.read_parquet(PROCESSED_DIR / "backtest_predictions.parquet"),
+        "metrics": pd.read_csv(PROCESSED_DIR / "model_metrics.csv"),
+        "errors_by_year": pd.read_csv(PROCESSED_DIR / "errors_by_year.csv"),
+        "monthly": pd.read_parquet(PROCESSED_DIR / "monthly_macro.parquet"),
+        "summary": summary,
+    }
+
+
+MARKET_FILES = {
+    "fx": "usd_kzt_daily.parquet",
+    "base_rate": "base_rate.parquet",
+    "brent": "brent_daily.parquet",
+    "monthly": "monthly_macro.parquet",
+}
+
+
+@st.cache_data
+def load_market_data():
+    """Latest processed market tables for the home page; None if not built yet."""
+    if not all((PROCESSED_DIR / name).exists() for name in MARKET_FILES.values()):
+        return None
+    return {key: pd.read_parquet(PROCESSED_DIR / name) for key, name in MARKET_FILES.items()}
 
 
 def select_dataset():

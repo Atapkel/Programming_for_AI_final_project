@@ -4,11 +4,12 @@ import plotly.express as px
 import streamlit as st
 
 from utils.data_utils import select_dataset
+from utils.ui import TEMPLATE, page_header
 
 
 def show_visualization():
-    st.title("Visualization")
-    st.write("Explore trends with interactive charts.")
+    page_header("Visualization", "Explore trends in any indicator with interactive charts and time filters.",
+                eyebrow="Charts")
     name, data = select_dataset()
     chart_title = name
     if "indicator" in data.columns:
@@ -61,7 +62,7 @@ def show_visualization():
     make_chart = {"Line": px.line, "Bar": px.bar, "Scatter": px.scatter}[chart_type]
     figure = make_chart(
         chart_data, x=x_column, y=y_columns,
-        title=f"{chart_title} · {period}", template="plotly_dark",
+        title=f"{chart_title} · {period}", template=TEMPLATE,
         labels={x_column: x_column.title(), "value": "Value", "variable": "Series"},
     )
     st.plotly_chart(figure, width="stretch")

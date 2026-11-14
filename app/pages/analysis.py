@@ -4,16 +4,17 @@ import pandas as pd
 import streamlit as st
 
 from utils.data_utils import DATASETS, select_dataset
+from utils.ui import page_header, section
 
 
 def show_analysis():
-    st.title("Data Analysis")
-    st.write("Preview the local datasets and explore their basic statistics.")
+    page_header("Data Analysis", "Preview the source datasets, their structure, statistics and missing values.",
+                eyebrow="Datasets")
     name, data = select_dataset()
     left, right = st.columns(2)
     left.metric("Rows", f"{len(data):,}")
     right.metric("Columns", len(data.columns))
-    st.subheader("Dataset information")
+    section("Dataset information")
     st.write(f"**{name}** · Source file: `{DATASETS[name]}`")
     time_column = "date" if "date" in data.columns else "year"
     times = data[time_column].dropna()
@@ -30,12 +31,12 @@ def show_analysis():
         "Download dataset as CSV", data.to_csv(index=False).encode("utf-8"),
         file_name=DATASETS[name], mime="text/csv",
     )
-    st.subheader("Data preview")
+    section("Data preview")
     st.caption("First 100 rows")
     st.dataframe(data.head(100), hide_index=True, width="stretch")
-    st.subheader("Basic statistics")
+    section("Basic statistics")
     st.dataframe(data.describe(include="all").T, width="stretch")
-    st.subheader("Missing values")
+    section("Missing values")
     missing = pd.DataFrame({
         "Column": data.columns,
         "Missing values": data.isna().sum().values,
