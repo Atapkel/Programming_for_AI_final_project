@@ -1,0 +1,3 @@
+# Pipeline artifacts are verified by SHA-256 in manifests; never convert line endings.
+data/** -text
+reports/** -text
