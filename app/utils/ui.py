@@ -40,6 +40,10 @@ CSS = f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 html, body, [class*="st-"], .stMarkdown, button, input {{ font-family: 'Inter', sans-serif; }}
+/* Streamlit draws icons as ligatures of the Material Symbols font; the rule above
+   would otherwise replace that font and show icon names such as
+   "keyboard_double_arrow_right" as plain text. */
+[data-testid="stIconMaterial"] {{ font-family: 'Material Symbols Rounded' !important; }}
 .block-container {{ padding-top: 1.6rem; max-width: 1320px; }}
 h1, h2, h3 {{ color: {NAVY_DARK}; letter-spacing: -0.01em; }}
 
