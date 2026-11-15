@@ -17,6 +17,7 @@ import json
 import re
 import sys
 import time
+import tempfile
 from datetime import date
 from io import StringIO
 from pathlib import Path
@@ -24,7 +25,9 @@ from pathlib import Path
 import pandas as pd
 import requests
 
-RAW_DIR = Path(__file__).resolve().parent.parent / "data" / "raw"
+from src.paths import RAW_DIR
+from src.artifacts import atomic_path, publish_files
+from src.validation import validate_source
 START_YEAR = 2000
 
 NBK_RATES_URL = (
@@ -96,7 +99,7 @@ def download_usd_kzt(start_year=START_YEAR, end_year=None):
     df = pd.DataFrame(rows, columns=["date", "quantity", "rate"])
     df["date"] = pd.to_datetime(df["date"])
     df["rate"] = df["rate"].str.replace(",", ".").astype(float) / df["quantity"].astype(int)
-    return df[["date", "rate"]].drop_duplicates("date").sort_values("date")
+    return df[["date", "rate"]].sort_values("date")
 
 
 def download_base_rate():
@@ -123,7 +126,7 @@ def download_base_rate():
 
     df = pd.DataFrame(records)
     df["date"] = pd.to_datetime(df["date"], format="%d.%m.%Y")
-    return df.drop_duplicates("date").sort_values("date")
+    return df.sort_values("date")
 
 
 def download_cpi_monthly():
@@ -168,12 +171,11 @@ def save_if_needed(name, download_func, force=False):
         print(f"[skip] {path.name} already exists")
         return
     print(f"[download] {name}")
-    try:
-        df = download_func()
-    except (requests.RequestException, ValueError, KeyError) as err:
-        print(f"[error] {name}: {err}")
-        return
-    df.to_csv(path, index=False)
+    df = download_func()
+    previous = pd.read_csv(path) if path.exists() else None
+    validate_source(name, df, previous)
+    with atomic_path(path, lambda p: validate_source(name, pd.read_csv(p), previous)) as temp:
+        df.to_csv(temp, index=False)
     print(f"[saved] {path.name}: {len(df)} rows")
 
 
@@ -186,8 +188,26 @@ def download_all(force=False):
         "brent_daily": download_brent,
         "world_bank_annual": download_world_bank,
     }
-    for name, func in sources.items():
-        save_if_needed(name, func, force)
+    # Download and validate every requested source before replacing ANY source.
+    with tempfile.TemporaryDirectory(prefix="raw-download-") as tmp:
+        staged = {}
+        for name, func in sources.items():
+            path = RAW_DIR / f"{name}.csv"
+            if path.exists() and not force:
+                validate_source(name, pd.read_csv(path))
+                print(f"[skip] {path.name} already exists and validates")
+                continue
+            previous = pd.read_csv(path) if path.exists() else None
+            try:
+                df = validate_source(name, func(), previous)
+                temp = Path(tmp) / path.name
+                df.to_csv(temp, index=False)
+                validate_source(name, pd.read_csv(temp), previous)
+                staged[path] = temp
+            except (requests.RequestException, ValueError, KeyError) as err:
+                raise ValueError(f"Download failed for {name}; existing sources preserved: {err}") from err
+        if staged:
+            publish_files(staged, RAW_DIR.parent)
 
 
 if __name__ == "__main__":

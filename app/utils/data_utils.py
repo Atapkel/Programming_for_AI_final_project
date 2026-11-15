@@ -20,56 +20,32 @@ DATASETS = {
     "World Bank indicators": "world_bank_annual.csv",
 }
 
-
-
-
-@st.cache_data
-def load_dataset(name):
-    """Cache local CSV data without modifying or downloading source files."""
-    data = pd.read_csv(RAW_DIR / DATASETS[name])
-    if "date" in data.columns:
-        data["date"] = pd.to_datetime(data["date"], errors="coerce")
-    return data
-
-
-PROCESSED_DIR = RAW_DIR.parent / "processed"
-MODEL_FILES = (
-    "forecasts.parquet", "backtest_predictions.parquet", "model_metrics.csv",
-    "errors_by_year.csv", "forecast_summary.json", "monthly_macro.parquet",
-)
-
-
-@st.cache_data
-def load_model_results():
-    """Load the saved outputs of src/models.py; return None if they are missing."""
-    if not all((PROCESSED_DIR / name).exists() for name in MODEL_FILES):
-        return None
-    with open(PROCESSED_DIR / "forecast_summary.json", encoding="utf-8") as file:
-        summary = json.load(file)
-    return {
-        "forecasts": pd.read_parquet(PROCESSED_DIR / "forecasts.parquet"),
-        "backtest": pd.read_parquet(PROCESSED_DIR / "backtest_predictions.parquet"),
-        "metrics": pd.read_csv(PROCESSED_DIR / "model_metrics.csv"),
-        "errors_by_year": pd.read_csv(PROCESSED_DIR / "errors_by_year.csv"),
-        "monthly": pd.read_parquet(PROCESSED_DIR / "monthly_macro.parquet"),
-        "summary": summary,
-    }
-
-
-MARKET_FILES = {
-    "fx": "usd_kzt_daily.parquet",
-    "base_rate": "base_rate.parquet",
-    "brent": "brent_daily.parquet",
-    "monthly": "monthly_macro.parquet",
+WORLD_BANK_UNITS = {
+    "exports_pct_gdp": "% of GDP", "gdp_current_usd": "current USD",
+    "gdp_growth_pct": "% annual growth", "inflation_cpi_pct": "% annual CPI inflation",
+    "unemployment_pct": "% of labor force", "usd_kzt_annual_avg": "KZT per USD",
 }
 
 
-@st.cache_data
+
+
+from src.dashboard_data import (
+    load_csv, load_model_results as _load_model_results,
+    load_market_data as _load_market_data, MODEL_FILES, MARKET_FILES,
+)
+from src.paths import PROCESSED_DIR
+
+
+def load_dataset(name):
+    return load_csv(RAW_DIR / DATASETS[name])
+
+
+def load_model_results():
+    return _load_model_results(PROCESSED_DIR)
+
+
 def load_market_data():
-    """Latest processed market tables for the home page; None if not built yet."""
-    if not all((PROCESSED_DIR / name).exists() for name in MARKET_FILES.values()):
-        return None
-    return {key: pd.read_parquet(PROCESSED_DIR / name) for key, name in MARKET_FILES.items()}
+    return _load_market_data(PROCESSED_DIR)
 
 
 def select_dataset():

@@ -48,15 +48,18 @@ section[data-testid="stSidebar"] > div:first-child {{
   background: linear-gradient(180deg, {NAVY_DARK} 0%, {NAVY} 100%);
 }}
 section[data-testid="stSidebar"] * {{ color: #FFFFFF; }}
-/* Fixed sidebar on desktop: always open, fixed width, no collapse or resize */
-@media (min-width: 768px) {{
+/* Wide-screen navigation; preserve native collapse behavior on smaller screens. */
+@media (min-width: 1200px) {{
   section[data-testid="stSidebar"] {{
     width: 250px !important; min-width: 250px !important; max-width: 250px !important;
-    transform: none !important; visibility: visible !important;
   }}
-  [data-testid="stSidebarCollapseButton"], [data-testid="stSidebarCollapsedControl"],
-  [data-testid="stExpandSidebarButton"], [data-testid="stSidebarResizeHandle"],
-  section[data-testid="stSidebar"] div[style*="col-resize"] {{ display: none !important; }}
+}}
+@media (max-width: 767px) {{
+  .block-container {{ padding: 1rem .65rem; }}
+  .kz-hero {{ padding: 1rem; }}
+  .kz-hero h1 {{ font-size: 1.4rem; }}
+  .kz-tiles {{ grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }}
+  .kz-table {{ display: block; overflow-x: auto; }}
 }}
 section[data-testid="stSidebar"] img {{
   border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.35);

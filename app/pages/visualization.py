@@ -3,7 +3,7 @@
 import plotly.express as px
 import streamlit as st
 
-from utils.data_utils import select_dataset
+from utils.data_utils import WORLD_BANK_UNITS, select_dataset
 from utils.ui import TEMPLATE, page_header
 
 
@@ -16,6 +16,7 @@ def show_visualization():
         indicator = st.selectbox("Indicator", sorted(data["indicator"].dropna().unique()))
         data = data[data["indicator"] == indicator]
         chart_title = f"{name}: {indicator.replace('_', ' ').title()}"
+        st.caption(f"Unit: {WORLD_BANK_UNITS.get(indicator, 'see source indicator code')}")
     x_columns = [column for column in ("date", "year") if column in data.columns]
     if not x_columns:
         st.info("This dataset has no date or year column to plot.")
@@ -67,4 +68,6 @@ def show_visualization():
     )
     st.plotly_chart(figure, width="stretch")
     st.caption("Hover for values, drag to zoom, and double-click to reset. Columns may use different units.")
+    st.download_button("Download filtered chart data", chart_data.to_csv(index=False).encode(),
+                       "visualization_data.csv", "text/csv")
 

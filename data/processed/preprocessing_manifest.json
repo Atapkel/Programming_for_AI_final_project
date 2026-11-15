@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "stage": "preprocessing",
+  "run_id": "19a2d1d83a2a477e87c6859003a2f0d4",
+  "created_at_utc": "2026-11-15T07:24:45.170783+00:00",
+  "python": "3.14.3",
+  "dependencies": {
+    "pandas": "3.1.1",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "statsmodels": "0.15.0",
+    "scikit-learn": "1.9.1",
+    "pyarrow": "26.0.1",
+    "matplotlib": "3.11.2",
+    "plotly": "7.1.0",
+    "streamlit": "1.67.0",
+    "requests": "2.34.2"
+  },
+  "source_sha256": {
+    "src/__init__.py": "1ab2f23a833dd4130fb0267dbdbcdd658d557f6dd31a00314ffbb5b088b2ec77",
+    "src/analysis.py": "95f5cf8611d76593810ee525fb06725c49edc2503a763c849ccb4ceae0cc6a8c",
+    "src/artifacts.py": "848a268161219650af2c79b19f623ca0ed0992f2ea50e5e592e2ab6e6c2d61a1",
+    "src/dashboard_data.py": "13d5ef22b43772140b0e124b6965f1ab96f7ac2621e6760ba20867f7a11fa124",
+    "src/data_loader.py": "4928cfe77fbf67b6b8fb78eb8ed1d5353ad52ba3c1da940e4d9fc1ed1fbdd931",
+    "src/database.py": "ced2b8f09cc48a3cdc36c8115ef2b1582c43a298d18c60750568ecaef3a08920",
+    "src/models.py": "44d871d0f5f97809a2b48c4097a7be4d37bb728b89b7a51563c0ab16138ff39b",
+    "src/paths.py": "a72ca9ba2d7d2d8a55856330b7c3a704af85ca7d711a32bbe236e07dedc38b29",
+    "src/preprocessing.py": "af56f1e0d275bbf17ad48ef0d4afffa2247d0488addf1f6c3b658bca03bbe701",
+    "src/validation.py": "1fbd53b2d6a3135415d92d0bc4a4a6bfe9f5898a141d87555a45a9bdccc2b838",
+    "main.py": "6aae5c00e4a5099e4fc9a6f4970dcd07d51f46b55a5d9213c41ce90b917aac84"
+  },
+  "inputs": {
+    "usd_kzt_daily.csv": "6bc6d27b151b60be47deaf5f80958e0f3acdc03d162ac3ea81a61b27b7895e5f",
+    "brent_daily.csv": "0ba0fd883c2b60a6893aca9d04da8b58a0a5aac64cf08c54d81253c9b216a6e6",
+    "cpi_monthly.csv": "73dec6452491010b34c829f961d302da9b8a34fd36b6afdec9e8ad859fbacedf",
+    "base_rate.csv": "fcf54fdbd58b1558cab4bdee5a02983998d03ed6ad2606f52501d8c485859999",
+    "world_bank_annual.csv": "0f4e526877a21481cd0efba7b6e8a54973c72d81ef1f320c70ae721eb099a730"
+  },
+  "outputs": {
+    "world_bank_annual.parquet": "59e5128ab4b0cfa74a4056712736eb3d47e4001a8deb9df10288767a4f00b8e3",
+    "quality_report.json": "fb1ec30a5284387659c2fa5929ebf4e5b88ed7a55576af771bc5e6ed15b774a9",
+    "base_rate.parquet": "fbd1cff1fd8897cb6ec801e26c5a0a1014034c889e30f8e331416a57ff3a8812",
+    "brent_daily.parquet": "718cd3cf8ae0b031fcacdc81775964b89cba66ce0dfe013984f06e928c1b56d9",
+    "monthly_forecasting.parquet": "e6ee2133ec8a37f7cdda974af097586fcba427ab93c1086639c9a6c0df98b30c",
+    "usd_kzt_daily.parquet": "a3ca9b18f49355ee49e81f5ea759c4e03d57937f62bc40fe3a4980f42488fbcc",
+    "monthly_macro.parquet": "a74adeb1409427132880dc6b9ac9a4d149f338f5d13fc3b02e271a6f596192cd",
+    "cpi_monthly.parquet": "9c52c628571ac2ecb9eae24c30fadc09c2df33360de894bef42e4a9a53f065d6"
+  }
+}

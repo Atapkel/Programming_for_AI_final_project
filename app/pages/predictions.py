@@ -9,6 +9,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from utils.data_utils import load_model_results
+from src.dashboard_data import show_forecast_metadata
 from utils.ui import (
     GOLD, GREEN, MUTED, NAVY, RED, SKY, callout, delta_html, html, page_header, section, tiles,
 )
@@ -26,13 +27,13 @@ TARGETS = {
 }
 MODELS = {
     # name, family, chart color
-    "naive": ("Naive (last value)", "Baseline", MUTED),
-    "seasonal_naive": ("Seasonal naive", "Baseline", "#9AA7B8"),
-    "arima": ("ARIMA", "Statistical", SKY),
-    "sarima": ("SARIMA", "Statistical", SKY),
-    "ets": ("Exponential smoothing", "Statistical", GOLD),
-    "lag_regression": ("Lag regression", "Machine learning", "#7A5AF8"),
-    "gradient_boosting": ("Gradient boosting", "Machine learning", GREEN),
+    "naive": ("Naive", "Baseline", MUTED),
+    "seasonal_naive": ("Seasonal Naive", "Baseline", "#9AA7B8"),
+    "arima": ("ARIMA / SARIMA", "Statistical", SKY),
+    "sarima": ("ARIMA / SARIMA", "Statistical", SKY),
+    "ets": ("ETS", "Statistical", GOLD),
+    "lag_regression": ("Ridge", "Machine learning", "#7A5AF8"),
+    "gradient_boosting": ("Gradient Boosting", "Machine learning", GREEN),
 }
 BADGE_CLASS = {"Baseline": "base", "Statistical": "stat", "Machine learning": "ml"}
 HISTORY_WINDOWS = {"1 year": 1, "3 years": 3, "5 years": 5, "10 years": 10, "Since 2005": None}
@@ -59,7 +60,11 @@ def fmt(value, info, sign=False):
 
 
 def show_predictions():
-    results = load_model_results()
+    try:
+        results = load_model_results()
+    except (OSError, ValueError) as err:
+        st.error(f"Cannot load consistent model artifacts: {err}")
+        return
     if results is None:
         page_header("Forecasts", "Model results are not available yet.", eyebrow="Predictions")
         st.warning("Run `python main.py` and choose **6** (full pipeline), then reload this page.")
@@ -72,7 +77,9 @@ def show_predictions():
     target = labels[choice or list(labels)[0]]
     info = TARGETS[target]
     summary = results["summary"][target]
-    metrics = results["metrics"][results["metrics"]["target"] == target].sort_values("MAE")
+    metrics = results["metrics"][results["metrics"]["target"] == target]
+    metrics = metrics.sort_values(["eligible", "MAE"], ascending=[False, True]) if "eligible" in metrics else metrics.sort_values("MAE")
+    show_forecast_metadata(results, target)
     forecasts = results["forecasts"][results["forecasts"]["target"] == target]
     backtest = results["backtest"][results["backtest"]["target"] == target]
     history = results["monthly"].set_index("date")[info["column"]].dropna()
@@ -90,6 +97,9 @@ def show_predictions():
     available = list(forecasts["model"].unique())
     ranked_available = [model for model in metrics["model"] if model in available]
     outlook_model = best if best in available else ranked_available[0]
+    if best != outlook_model:
+        st.info(f"Backtest winner: {model_name(best)}. Its future path is unavailable; "
+                f"the outlook explicitly uses {model_name(outlook_model)}.")
 
     show_headline(metrics, forecasts, history, summary, info, best, outlook_model, target)
 
@@ -133,7 +143,7 @@ def show_headline(metrics, forecasts, history, summary, info, best, outlook_mode
     next_change = next_month["forecast"] - last_value
     tiles([
         {
-            "label": "Most accurate model", "value": model_name(best),
+            "label": "Lowest MAE on test", "value": model_name(best),
             "delta": delta_html(gain, f"{gain:.1f}% lower error than naive"),
             "note": f"Ranked 1st of {len(metrics)} on the test period",
         },
@@ -157,8 +167,8 @@ def show_headline(metrics, forecasts, history, summary, info, best, outlook_mode
         message = (
             f"<b>{model_name(outlook_model)}</b> expects prices to rise about "
             f"<b>{summary['projected_12m_inflation_pct'][outlook_model]:.1f}%</b> over the next 12 "
-            f"months. On the test period, the best model was <b>{gain:.1f}%</b> more accurate "
-            "than simply repeating last month's value."
+            f"target months after the last observation. On the test period, <b>{model_name(best)}</b> "
+            f"achieved <b>{gain:.1f}%</b> lower MAE than simply repeating last month's value."
         )
     else:
         message = (
@@ -254,7 +264,7 @@ def direction_text(directions, model):
 
 def show_backtest(backtest, metrics, best, info, target):
     callout("Each month the model was refit on all earlier data and asked to predict only the "
-            "next month, exactly as it would have been used in practice.")
+            "next month, using final-vintage data and documented publication assumptions.")
     models = st.multiselect(
         "Models", list(metrics["model"]), default=[best] + (["naive"] if best != "naive" else []),
         format_func=model_name, key=f"bt_{target}",
@@ -320,8 +330,8 @@ def show_ranking(metrics, backtest, errors_by_year, best, info, target):
         f'<tbody>{"".join(rows)}</tbody></table>'
     )
     st.caption(
-        "Sorted by MAE (average absolute miss). RMSE punishes large misses more. "
-        "MASE below 1 = better than a naive forecast. Direction = share of months where the "
+        "Reliable runs first, then MAE (average absolute miss). Failed-fit fallbacks are flagged above. RMSE punishes large misses more. "
+        "MASE uses the training naive scale (seasonal for inflation), not test-baseline superiority. Direction = share of months where the "
         "model correctly predicted whether the value would go up or down."
     )
 
@@ -344,16 +354,16 @@ def show_method(summary):
     steps = [
         ("Prepare the series", "Daily rates are averaged to months; inflation is the "
          "month-over-month change of the consumer price index."),
-        ("Handle gaps", "Missing exchange-rate days (28.07–28.08.2023) are filled by time "
-         "interpolation and flagged in the data."),
+        ("Handle gaps", "Stage 1 forecasts use past-only forward filling. Historical charts retain "
+         "flagged interpolation; legacy forecasts are identified above."),
         ("Split by time", "The last 36 months form the test set. Models never see data from the "
-         "future, which avoids look-ahead bias."),
+         "future target observations. Publication timing is assumed; vintage revisions remain a limitation."),
         ("Train models", "Two naive baselines, ARIMA/SARIMA"
          + (f" (order {tuple(order)})" if order else "")
          + ", exponential smoothing, lag regression and gradient boosting."),
         ("Evaluate", "Rolling one-month-ahead forecasts scored with MAE, RMSE, sMAPE and MASE, "
          "and compared with the naive baselines."),
-        ("Forecast", "Models refit on all data predict the next 12 months, with 95% intervals "
+        ("Forecast", "Available models refit on the target history predict 12 target months, with model-based 95% intervals "
          "where the model provides them."),
     ]
     for start in range(0, len(steps), 3):

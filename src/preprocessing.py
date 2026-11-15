@@ -20,9 +20,9 @@ from pathlib import Path
 
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parent.parent
-RAW_DIR = ROOT / "data" / "raw"
-PROCESSED_DIR = ROOT / "data" / "processed"
+from src.paths import ROOT, RAW_DIR, PROCESSED_DIR
+from src.validation import dated_series, validate_monthly_index, validate_source
+from src.artifacts import assert_idle, fingerprint, manifest, publish_files, write_json
 
 RAW_FILES = {
     "usd_kzt": "usd_kzt_daily.csv",
@@ -42,6 +42,8 @@ REGIMES = [
 
 def load_raw(raw_dir=RAW_DIR):
     """Read all raw CSV files into a dict of DataFrames."""
+    assert_idle(raw_dir)
+    assert_idle(raw_dir.parent)
     data = {}
     for name, filename in RAW_FILES.items():
         path = raw_dir / filename
@@ -50,12 +52,15 @@ def load_raw(raw_dir=RAW_DIR):
         df = pd.read_csv(path)
         if "date" in df.columns:
             df["date"] = pd.to_datetime(df["date"])
+        validate_source(Path(filename).stem, df)
         data[name] = df
     return data
 
 
 def audit_series(series, freq=None):
     """Data quality summary of one time series: gaps, duplicates, outliers (IQR rule)."""
+    if series.empty or series.index.hasnans:
+        raise ValueError("Cannot audit an empty series or invalid timestamps")
     q1, q3 = series.quantile([0.25, 0.75])
     iqr = q3 - q1
     outliers = ((series < q1 - 1.5 * iqr) | (series > q3 + 1.5 * iqr)).sum()
@@ -77,12 +82,11 @@ def audit_series(series, freq=None):
 
 
 def to_series(df, value_col):
-    """DataFrame with a date column -> sorted Series indexed by date, duplicates removed."""
-    s = df.set_index("date")[value_col].sort_index()
-    return s[~s.index.duplicated(keep="last")]
+    """Sorted series; ambiguous duplicate dates are rejected before any cleaning."""
+    return dated_series(df, value_col)
 
 
-def clean_usd_kzt(df):
+def clean_usd_kzt(df, *, causal=False):
     """Reindex to every calendar day and fill gaps by time interpolation.
 
     NBK publishes a rate for every day (weekends included), so missing days are
@@ -92,7 +96,12 @@ def clean_usd_kzt(df):
     full_index = pd.date_range(s.index.min(), s.index.max(), freq="D", name="date")
     out = s.reindex(full_index).to_frame("usd_kzt")
     out["is_filled"] = out["usd_kzt"].isna()
-    out["usd_kzt"] = out["usd_kzt"].interpolate(method="time")
+    out["source_usd_kzt"] = out["usd_kzt"]  # original values, never overwritten
+    # Interpolation is retrospective EDA only. Models use causal forward fill.
+    out["usd_kzt"] = (out["usd_kzt"].ffill() if causal
+                      else out["usd_kzt"].interpolate(method="time"))
+    if out["usd_kzt"].isna().any():
+        raise ValueError("USD/KZT has leading missing values with no past observation")
     return out.reset_index()
 
 
@@ -104,9 +113,12 @@ def clean_brent(df):
 def clean_cpi(df):
     """Add month-over-month and year-over-year inflation (%) to the CPI index."""
     s = to_series(df, "cpi_index")
+    validate_monthly_index(s.index)
+    if s.isna().any() or (s <= 0).any():
+        raise ValueError("CPI must contain positive observations for every month")
     out = s.to_frame()
-    out["inflation_mom"] = s.pct_change() * 100
-    out["inflation_yoy"] = s.pct_change(12) * 100
+    out["inflation_mom"] = s.pct_change(fill_method=None) * 100
+    out["inflation_yoy"] = s.pct_change(12, fill_method=None) * 100
     return out.reset_index()
 
 
@@ -141,6 +153,7 @@ def build_monthly(clean):
     fx = clean["usd_kzt"].set_index("date")
     brent = clean["brent"].set_index("date")["brent_usd"]
     cpi = clean["cpi"].set_index("date")
+    validate_monthly_index(cpi.index)
     base = clean["base_rate"].set_index("date")["base_rate"]
 
     monthly = pd.DataFrame({
@@ -164,6 +177,7 @@ def build_monthly(clean):
     if not last_day.is_month_end:
         monthly = monthly[monthly.index < last_day.replace(day=1)]
     monthly.index.name = "date"
+    validate_monthly_index(monthly.index)
     return monthly.reset_index()
 
 
@@ -209,13 +223,15 @@ def compare_formats(df, repeats=5):
 
 def run_preprocessing(save=True):
     """Full pipeline: load raw -> audit -> clean -> monthly table -> save."""
+    input_paths = [RAW_DIR / f for f in RAW_FILES.values()]
+    input_version = fingerprint(input_paths)
     raw = load_raw()
 
     quality = {"raw_audit": {
-        "usd_kzt": audit_series(to_series(raw["usd_kzt"], "rate"), freq="D"),
-        "brent": audit_series(to_series(raw["brent"], "brent_usd"), freq="B"),
-        "cpi": audit_series(to_series(raw["cpi"], "cpi_index"), freq="MS"),
-        "base_rate": audit_series(to_series(raw["base_rate"], "rate")),
+        "usd_kzt": audit_series(raw["usd_kzt"].set_index("date")["rate"], freq="D"),
+        "brent": audit_series(raw["brent"].set_index("date")["brent_usd"], freq="B"),
+        "cpi": audit_series(raw["cpi"].set_index("date")["cpi_index"], freq="MS"),
+        "base_rate": audit_series(raw["base_rate"].set_index("date")["rate"]),
     }}
 
     clean = {
@@ -229,17 +245,33 @@ def run_preprocessing(save=True):
         "usd_kzt": clean["usd_kzt_daily"], "brent": clean["brent_daily"],
         "cpi": clean["cpi_monthly"], "base_rate": clean["base_rate"],
     })
+    clean["monthly_forecasting"] = build_monthly({
+        "usd_kzt": clean_usd_kzt(raw["usd_kzt"], causal=True),
+        "brent": clean["brent_daily"], "cpi": clean["cpi_monthly"],
+        "base_rate": clean["base_rate"],
+    })
+    quality["forecast_preprocessing"] = "causal forward fill; interpolation is EDA-only"
 
     quality["usd_kzt_filled_days"] = int(clean["usd_kzt_daily"]["is_filled"].sum())
     quality["memory_optimization"] = {name: measure_memory(df) for name, df in clean.items()}
     quality["csv_vs_parquet_usd_kzt_daily"] = compare_formats(clean["usd_kzt_daily"])
+    if fingerprint(input_paths) != input_version:
+        raise ValueError("Raw inputs changed during preprocessing; nothing was published")
 
     if save:
         PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
-        for name, df in clean.items():
-            df.to_parquet(PROCESSED_DIR / f"{name}.parquet", index=False)
-        with open(PROCESSED_DIR / "quality_report.json", "w", encoding="utf-8") as f:
-            json.dump(quality, f, indent=2)
+        with tempfile.TemporaryDirectory(prefix="preprocessing-") as tmp:
+            staged = Path(tmp)
+            for name, df in clean.items():
+                path = staged / f"{name}.parquet"
+                df.to_parquet(path, index=False)
+                pd.testing.assert_frame_equal(df, pd.read_parquet(path))
+            write_json(staged / "quality_report.json", quality)
+            outputs = {p.name: p for p in staged.iterdir()}
+            write_json(staged / "preprocessing_manifest.json", manifest(
+                "preprocessing", {f: RAW_DIR / f for f in RAW_FILES.values()}, outputs))
+            outputs["preprocessing_manifest.json"] = staged / "preprocessing_manifest.json"
+            publish_files({PROCESSED_DIR / name: p for name, p in outputs.items()}, PROCESSED_DIR.parent)
     return clean, quality
 
 

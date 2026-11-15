@@ -3,14 +3,22 @@
 import pandas as pd
 import streamlit as st
 
-from utils.data_utils import DATASETS, select_dataset
+from utils.data_utils import DATASETS, WORLD_BANK_UNITS, select_dataset
 from utils.ui import page_header, section
 
 
 def show_analysis():
-    page_header("Data Analysis", "Preview the source datasets, their structure, statistics and missing values.",
+    page_header("Data Explorer", "Preview the source datasets, their structure, statistics and missing values.",
                 eyebrow="Datasets")
     name, data = select_dataset()
+    if "indicator" in data:
+        indicator = st.selectbox("Indicator", sorted(data.indicator.unique()), index=None,
+                                 placeholder="Choose one indicator to view statistics")
+        if indicator is None:
+            st.info("Select a World Bank indicator first. Different units must not be pooled.")
+            return
+        data = data[data.indicator == indicator].copy()
+        st.caption(f"Statistics for {indicator} only · unit: {WORLD_BANK_UNITS.get(indicator, 'see source code')} · World Bank code: {data.code.iloc[0]}")
     left, right = st.columns(2)
     left.metric("Rows", f"{len(data):,}")
     right.metric("Columns", len(data.columns))
