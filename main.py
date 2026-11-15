@@ -7,11 +7,16 @@ Run:
 import subprocess
 import sys
 import time
+import os
+import shutil
+import tempfile
 from pathlib import Path
 
 import requests
 
 from src import analysis, data_loader, database, models, preprocessing
+from src.paths import DATA_DIR, RAW_DIR, PROCESSED_DIR, FIGURES_DIR
+from src.artifacts import fingerprint, manifest, publish_files, write_json
 
 ROOT = Path(__file__).resolve().parent
 
@@ -47,6 +52,12 @@ def step_models():
         print(f"  {target}: best model = {info['best_model']}")
 
 
+def step_evaluation():
+    from src.evaluation import run_evaluation
+    print("  Stage 2: rolling origins, windows, ablations and future ML (several minutes)...")
+    run_evaluation()
+
+
 def step_show_query():
     names = list(database.QUERIES)
     for i, name in enumerate(names, start=1):
@@ -67,9 +78,31 @@ def step_dashboard():
 
 
 def step_full_pipeline():
-    for title, func in PIPELINE:
-        print(f"\n--- {title} ---")
-        func()
+    """All stages run against a temporary data tree; publish only on success."""
+    inputs = {p.name: p for p in RAW_DIR.glob("*.csv")}
+    before = fingerprint(inputs.values())
+    with tempfile.TemporaryDirectory(prefix="macro-pipeline-") as tmp:
+        stage = Path(tmp)
+        data, figures = stage / "data", stage / "figures"
+        shutil.copytree(RAW_DIR, data / "raw")
+        env = {**os.environ, "MACRO_DATA_DIR": str(data), "MACRO_FIGURES_DIR": str(figures)}
+        for module in ("preprocessing", "database", "analysis", "models"):
+            print(f"Running {module} in isolated staging...", flush=True)
+            subprocess.run([sys.executable, "-m", f"src.{module}"], env=env, cwd=ROOT, check=True)
+        if fingerprint(inputs.values()) != before:
+            raise ValueError("Raw inputs changed during the run; staged results were not published")
+        outputs = {str(p.relative_to(data)): p for p in data.rglob("*")
+                   if p.is_file() and "raw" not in p.relative_to(data).parts}
+        outputs.update({os.path.relpath(FIGURES_DIR / p.name, DATA_DIR): p
+                        for p in figures.iterdir() if p.is_file()})
+        run = manifest("full_pipeline", inputs, outputs)
+        write_json(stage / "pipeline_manifest.json", run)
+        files = {DATA_DIR / p.relative_to(data): p for p in data.rglob("*")
+                 if p.is_file() and "raw" not in p.relative_to(data).parts}
+        files.update({FIGURES_DIR / p.name: p for p in figures.iterdir() if p.is_file()})
+        files[DATA_DIR / "pipeline_manifest.json"] = stage / "pipeline_manifest.json"
+        publish_files(files, DATA_DIR)
+        print(f"Published complete pipeline run {run['run_id']}")
 
 
 PIPELINE = [
@@ -88,6 +121,7 @@ MENU = {
     "6": ("Run full pipeline (steps 2-5)", step_full_pipeline),
     "7": ("Show an SQL query result", step_show_query),
     "8": ("Open dashboard", step_dashboard),
+    "9": ("Stage 2 multi-horizon experiments (preserves Stage 1 reference)", step_evaluation),
     "0": ("Exit", None),
 }
 
@@ -133,6 +167,8 @@ def main():
             print(f"  [error] {err}\n  Run the earlier steps first (download -> preprocess -> database).")
         except requests.RequestException as err:
             print(f"  [network error] {err}")
+        except (ValueError, OSError, RuntimeError, subprocess.CalledProcessError) as err:
+            print(f"  [error] {err}")
         except KeyboardInterrupt:
             print("\n  Interrupted")
         else:

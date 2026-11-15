@@ -9,14 +9,17 @@ Usage:
 """
 
 import sqlite3
+import tempfile
+from contextlib import closing
 from pathlib import Path
 
 import pandas as pd
 
 from src.preprocessing import PROCESSED_DIR, run_preprocessing
+from src.paths import ROOT, DATA_DIR
+from src.artifacts import assert_idle, publish_files, verify_manifest, fingerprint
 
-ROOT = Path(__file__).resolve().parent.parent
-DB_PATH = ROOT / "data" / "macro.db"
+DB_PATH = DATA_DIR / "macro.db"
 SQL_RESULTS_DIR = PROCESSED_DIR / "sql"
 
 SCHEMA = """
@@ -254,6 +257,9 @@ QUERIES = {
 
 def load_processed():
     """Read processed Parquet tables; run preprocessing first if they are missing."""
+    assert_idle(PROCESSED_DIR)
+    assert_idle(PROCESSED_DIR.parent)
+    verify_manifest(PROCESSED_DIR, "preprocessing_manifest.json")
     needed = ["usd_kzt_daily", "brent_daily", "cpi_monthly", "base_rate",
               "world_bank_annual", "monthly_macro"]
     if not all((PROCESSED_DIR / f"{name}.parquet").exists() for name in needed):
@@ -292,13 +298,10 @@ def build_observations(tables, indicator_ids):
     return obs[["indicator_id", "date", "value", "is_filled"]]
 
 
-def build_database(db_path=DB_PATH):
+def _build_database(db_path):
     """Create a fresh SQLite database from the processed tables."""
     tables = load_processed()
-    if db_path.exists():
-        db_path.unlink()
-
-    with sqlite3.connect(db_path) as conn:
+    with closing(sqlite3.connect(db_path)) as conn, conn:
         conn.execute("PRAGMA foreign_keys = ON")
         conn.executescript(SCHEMA)
 
@@ -323,28 +326,58 @@ def build_database(db_path=DB_PATH):
     return db_path
 
 
+def validate_database(path):
+    with closing(sqlite3.connect(f"file:{path}?mode=ro", uri=True)) as conn:
+        if conn.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
+            raise ValueError("SQLite integrity check failed")
+        if conn.execute("PRAGMA foreign_key_check").fetchall():
+            raise ValueError("SQLite foreign key check failed")
+        for table in ("sources", "indicators", "observations", "monthly_macro"):
+            if conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0] == 0:
+                raise ValueError(f"Empty SQLite table: {table}")
+        for _, sql in QUERIES.values():
+            conn.execute(sql).fetchall()
+
+
+def build_database(db_path=DB_PATH):
+    """Keep the last database until the replacement and all queries validate."""
+    db_path = Path(db_path)
+    inputs = list(PROCESSED_DIR.glob("*.parquet"))
+    version = fingerprint(inputs)
+    with tempfile.TemporaryDirectory(prefix="database-") as tmp:
+        temp = Path(tmp) / "macro.db"
+        _build_database(temp)
+        validate_database(temp)
+        if fingerprint(inputs) != version:
+            raise ValueError("Processed inputs changed while building SQLite")
+        publish_files({db_path: temp}, db_path.parent)
+    return db_path
+
+
 def run_query(name, db_path=DB_PATH):
     """Run one query from QUERIES and return the result as a DataFrame."""
     _, sql = QUERIES[name]
-    with sqlite3.connect(db_path) as conn:
+    assert_idle(Path(db_path).parent)
+    with closing(sqlite3.connect(f"file:{Path(db_path).resolve()}?mode=ro", uri=True)) as conn:
         return pd.read_sql(sql, conn)
 
 
 def run_all_queries(db_path=DB_PATH, save=True):
     """Run every query, optionally saving each result to data/processed/sql/<name>.csv."""
     results = {}
-    if save:
-        SQL_RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     for name, (description, _) in QUERIES.items():
-        try:
-            df = run_query(name, db_path)
-        except (sqlite3.Error, pd.errors.DatabaseError) as err:
-            print(f"[error] {name}: {err}")
-            continue
+        df = run_query(name, db_path)
         results[name] = df
-        if save:
-            df.to_csv(SQL_RESULTS_DIR / f"{name}.csv", index=False)
         print(f"[ok] {name}: {len(df)} rows - {description}")
+    if save:
+        with tempfile.TemporaryDirectory(prefix="sql-") as tmp:
+            files = {}
+            for name, df in results.items():
+                temp = Path(tmp) / f"{name}.csv"
+                df.to_csv(temp, index=False)
+                pd.read_csv(temp)  # verify serialization before any replacement
+                files[SQL_RESULTS_DIR / temp.name] = temp
+            publish_files(files, PROCESSED_DIR.parent)
     return results
 
 

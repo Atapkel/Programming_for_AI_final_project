@@ -1,4 +1,9 @@
 {
+  "methodology": {
+    "transition_month": "post (whole event month)",
+    "chow_scope": "shift in mean only; classical p-values are not autocorrelation-robust",
+    "lag_correlations": "descriptive associations, not causal pass-through estimates"
+  },
   "stationarity": {
     "usd_kzt_avg (level)": {
       "adf_p": 0.9142,
@@ -62,54 +67,102 @@
   },
   "chow_tests_inflation_mom": {
     "2009 devaluation": {
-      "mean_before": 0.867,
-      "mean_after": 0.694,
-      "f_stat": 3.39,
-      "p_value": 0.0666
+      "mean_before": 0.869,
+      "mean_after": 0.695,
+      "f_stat": 3.38,
+      "p_value": 0.0673,
+      "break_month": "2009-02-01",
+      "transition_month": "post",
+      "n_before": 48,
+      "n_after": 212,
+      "model": "mean shift: y = constant + error",
+      "inference": "Exploratory classical F test; iid/homoskedastic assumptions, no causal claim"
     },
     "2014 devaluation": {
-      "mean_before": 0.693,
-      "mean_after": 0.752,
-      "f_stat": 0.63,
-      "p_value": 0.429
+      "mean_before": 0.683,
+      "mean_after": 0.758,
+      "f_stat": 1.0,
+      "p_value": 0.3184,
+      "break_month": "2014-02-01",
+      "transition_month": "post",
+      "n_before": 108,
+      "n_after": 152,
+      "model": "mean shift: y = constant + error",
+      "inference": "Exploratory classical F test; iid/homoskedastic assumptions, no causal claim"
     },
     "Tenge float": {
-      "mean_before": 0.648,
-      "mean_after": 0.803,
-      "f_stat": 4.45,
-      "p_value": 0.0359
+      "mean_before": 0.651,
+      "mean_after": 0.799,
+      "f_stat": 4.07,
+      "p_value": 0.0446,
+      "break_month": "2015-08-01",
+      "transition_month": "post",
+      "n_before": 126,
+      "n_after": 134,
+      "model": "mean shift: y = constant + error",
+      "inference": "Exploratory classical F test; iid/homoskedastic assumptions, no causal claim"
     },
     "2022 shock": {
-      "mean_before": 0.663,
-      "mean_after": 0.967,
-      "f_stat": 11.85,
-      "p_value": 0.0007
+      "mean_before": 0.662,
+      "mean_after": 0.965,
+      "f_stat": 11.87,
+      "p_value": 0.0007,
+      "break_month": "2022-02-01",
+      "transition_month": "post",
+      "n_before": 204,
+      "n_after": 56,
+      "model": "mean shift: y = constant + error",
+      "inference": "Exploratory classical F test; iid/homoskedastic assumptions, no causal claim"
     }
   },
   "chow_tests_fx_change": {
     "2009 devaluation": {
-      "mean_before": 0.061,
-      "mean_after": 0.582,
-      "f_stat": 2.42,
-      "p_value": 0.121
+      "mean_before": -0.122,
+      "mean_after": 0.672,
+      "f_stat": 5.64,
+      "p_value": 0.0181,
+      "break_month": "2009-02-01",
+      "transition_month": "post",
+      "n_before": 108,
+      "n_after": 213,
+      "model": "mean shift: y = constant + error",
+      "inference": "Exploratory classical F test; iid/homoskedastic assumptions, no causal claim"
     },
     "2014 devaluation": {
-      "mean_before": 0.145,
-      "mean_after": 0.693,
-      "f_stat": 2.98,
-      "p_value": 0.0851
+      "mean_before": 0.078,
+      "mean_after": 0.763,
+      "f_stat": 4.69,
+      "p_value": 0.0311,
+      "break_month": "2014-02-01",
+      "transition_month": "post",
+      "n_before": 168,
+      "n_after": 153,
+      "model": "mean shift: y = constant + error",
+      "inference": "Exploratory classical F test; iid/homoskedastic assumptions, no causal claim"
     },
     "Tenge float": {
-      "mean_before": 0.233,
-      "mean_after": 0.645,
-      "f_stat": 1.64,
-      "p_value": 0.2016
+      "mean_before": 0.176,
+      "mean_after": 0.72,
+      "f_stat": 2.88,
+      "p_value": 0.0908,
+      "break_month": "2015-08-01",
+      "transition_month": "post",
+      "n_before": 186,
+      "n_after": 135,
+      "model": "mean shift: y = constant + error",
+      "inference": "Exploratory classical F test; iid/homoskedastic assumptions, no causal claim"
     },
     "2022 shock": {
       "mean_before": 0.466,
-      "mean_after": 0.113,
-      "f_stat": 0.71,
-      "p_value": 0.3995
+      "mean_after": 0.121,
+      "f_stat": 0.69,
+      "p_value": 0.4072,
+      "break_month": "2022-02-01",
+      "transition_month": "post",
+      "n_before": 264,
+      "n_after": 57,
+      "model": "mean shift: y = constant + error",
+      "inference": "Exploratory classical F test; iid/homoskedastic assumptions, no causal claim"
     }
   },
   "corr_levels_2016": {

@@ -1,0 +1,3875 @@
+{
+  "orders": [
+    {
+      "target": "inflation_mom",
+      "window": "full",
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "selection_cutoff": "2022-10-01"
+    },
+    {
+      "target": "inflation_mom",
+      "window": "post2015",
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "selection_cutoff": "2022-10-01"
+    },
+    {
+      "target": "inflation_mom",
+      "window": "rolling120",
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "selection_cutoff": "2022-10-01"
+    },
+    {
+      "target": "usd_kzt",
+      "window": "full",
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "selection_cutoff": "2022-11-01"
+    },
+    {
+      "target": "usd_kzt",
+      "window": "post2015",
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "selection_cutoff": "2022-11-01"
+    },
+    {
+      "target": "usd_kzt",
+      "window": "rolling120",
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "selection_cutoff": "2022-11-01"
+    }
+  ],
+  "fits": [
+    {
+      "target": "inflation_mom",
+      "n_observations": 213,
+      "order": [
+        0,
+        0,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 213,
+      "order": [
+        0,
+        0,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 213,
+      "order": [
+        0,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 213,
+      "order": [
+        1,
+        0,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 213,
+      "order": [
+        1,
+        0,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 213,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 213,
+      "order": [
+        2,
+        0,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 213,
+      "order": [
+        2,
+        0,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": [
+        "Non-stationary starting autoregressive parameters found. Using zeros as starting parameters.",
+        "Non-invertible starting MA parameters found. Using zeros as starting parameters."
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 213,
+      "order": [
+        2,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": false,
+      "warnings": [
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals"
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 213,
+      "order": [
+        2,
+        0,
+        2
+      ],
+      "attempt": 2,
+      "maxiter": 200,
+      "converged": false,
+      "warnings": [
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals"
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 213,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 214,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 215,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 216,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": false,
+      "warnings": [
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals"
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 216,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 2,
+      "maxiter": 200,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 217,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 218,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 219,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 220,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 221,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 222,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 223,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 224,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 225,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 226,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 227,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 228,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 229,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 230,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 231,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 232,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 233,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 234,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 235,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 236,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 237,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 238,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 239,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 240,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 241,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 242,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 243,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 244,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 245,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 246,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 247,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 248,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 260,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 86,
+      "order": [
+        0,
+        0,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": [
+        "Non-stationary starting seasonal autoregressive Using zeros as starting parameters."
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 86,
+      "order": [
+        0,
+        0,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": [
+        "Non-stationary starting seasonal autoregressive Using zeros as starting parameters."
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 86,
+      "order": [
+        0,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": [
+        "Non-stationary starting seasonal autoregressive Using zeros as starting parameters."
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 86,
+      "order": [
+        1,
+        0,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": [
+        "Non-stationary starting seasonal autoregressive Using zeros as starting parameters."
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 86,
+      "order": [
+        1,
+        0,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": [
+        "Non-stationary starting seasonal autoregressive Using zeros as starting parameters."
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 86,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": [
+        "Non-stationary starting seasonal autoregressive Using zeros as starting parameters."
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 86,
+      "order": [
+        2,
+        0,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": [
+        "Non-stationary starting seasonal autoregressive Using zeros as starting parameters."
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 86,
+      "order": [
+        2,
+        0,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": false,
+      "warnings": [
+        "Non-stationary starting autoregressive parameters found. Using zeros as starting parameters.",
+        "Non-invertible starting MA parameters found. Using zeros as starting parameters.",
+        "Non-stationary starting seasonal autoregressive Using zeros as starting parameters.",
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals"
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 86,
+      "order": [
+        2,
+        0,
+        1
+      ],
+      "attempt": 2,
+      "maxiter": 200,
+      "converged": true,
+      "warnings": [
+        "Non-stationary starting autoregressive parameters found. Using zeros as starting parameters.",
+        "Non-invertible starting MA parameters found. Using zeros as starting parameters.",
+        "Non-stationary starting seasonal autoregressive Using zeros as starting parameters."
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 86,
+      "order": [
+        2,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": [
+        "Non-stationary starting seasonal autoregressive Using zeros as starting parameters."
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 86,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": [
+        "Non-stationary starting seasonal autoregressive Using zeros as starting parameters."
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 87,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 88,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 89,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 90,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 91,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 92,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 93,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 94,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 95,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 96,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 97,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 98,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 99,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 100,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 101,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 102,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 103,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": false,
+      "warnings": [
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals"
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 103,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 2,
+      "maxiter": 200,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 104,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 105,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 106,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 107,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 108,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 109,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 110,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 111,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 112,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 113,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 114,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 115,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 116,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 117,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 118,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 119,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 121,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 133,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        0,
+        0,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        0,
+        0,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        0,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        2,
+        0,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        2,
+        0,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": [
+        "Non-stationary starting autoregressive parameters found. Using zeros as starting parameters.",
+        "Non-invertible starting MA parameters found. Using zeros as starting parameters."
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        2,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": false,
+      "warnings": [
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals"
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 2,
+      "maxiter": 200,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": false,
+      "warnings": [
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals"
+      ]
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 2,
+      "maxiter": 200,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "inflation_mom",
+      "n_observations": 120,
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 275,
+      "order": [
+        0,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 275,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 275,
+      "order": [
+        0,
+        1,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 275,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 275,
+      "order": [
+        1,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 275,
+      "order": [
+        1,
+        1,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 275,
+      "order": [
+        2,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 275,
+      "order": [
+        2,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": [
+        "Non-stationary starting autoregressive parameters found. Using zeros as starting parameters.",
+        "Non-invertible starting MA parameters found. Using zeros as starting parameters."
+      ]
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 275,
+      "order": [
+        2,
+        1,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": false,
+      "warnings": [
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals"
+      ]
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 275,
+      "order": [
+        2,
+        1,
+        2
+      ],
+      "attempt": 2,
+      "maxiter": 200,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 275,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 276,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 277,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 278,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 279,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 280,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 281,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 282,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 283,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 284,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 285,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 286,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 287,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 288,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 289,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 290,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 291,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 292,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": false,
+      "warnings": [
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals"
+      ]
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 292,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 2,
+      "maxiter": 200,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 293,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 294,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 295,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": false,
+      "warnings": [
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals"
+      ]
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 295,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 2,
+      "maxiter": 200,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 296,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 297,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 298,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 299,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 300,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 301,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 302,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 303,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 304,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 305,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 306,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 307,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 308,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 309,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 310,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 322,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 87,
+      "order": [
+        0,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 87,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 87,
+      "order": [
+        0,
+        1,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 87,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 87,
+      "order": [
+        1,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 87,
+      "order": [
+        1,
+        1,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 87,
+      "order": [
+        2,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 87,
+      "order": [
+        2,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 87,
+      "order": [
+        2,
+        1,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 87,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 88,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 89,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 90,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 91,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 92,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 93,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 94,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 95,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 96,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 97,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 98,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 99,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 100,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 101,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 102,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 103,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 104,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 105,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 106,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 107,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 108,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 109,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 110,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 111,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 112,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 113,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 114,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 115,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 116,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 117,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 118,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 119,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 121,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 122,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 134,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        0,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        0,
+        1,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        2,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        2,
+        1,
+        1
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": [
+        "Non-stationary starting autoregressive parameters found. Using zeros as starting parameters.",
+        "Non-invertible starting MA parameters found. Using zeros as starting parameters."
+      ]
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        2,
+        1,
+        2
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": false,
+      "warnings": [
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals"
+      ]
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 2,
+      "maxiter": 200,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": false,
+      "warnings": [
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals"
+      ]
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 2,
+      "maxiter": 200,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": false,
+      "warnings": [
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals"
+      ]
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 2,
+      "maxiter": 200,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    },
+    {
+      "target": "usd_kzt_avg",
+      "n_observations": 120,
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "attempt": 1,
+      "maxiter": 50,
+      "converged": true,
+      "warnings": []
+    }
+  ],
+  "runtime_seconds": 208.36046975001227,
+  "origins": 36
+}

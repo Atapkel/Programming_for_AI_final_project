@@ -11,6 +11,7 @@ Usage:
 
 import json
 import warnings
+import tempfile
 from pathlib import Path
 
 import matplotlib
@@ -27,9 +28,10 @@ from statsmodels.tsa.seasonal import STL
 from statsmodels.tsa.stattools import adfuller, kpss
 
 from src.preprocessing import PROCESSED_DIR
+from src.paths import ROOT, FIGURES_DIR
+from src.validation import event_partition, validate_monthly_index
+from src.artifacts import assert_idle, publish_files, manifest, write_json, fingerprint, verify_manifest
 
-ROOT = Path(__file__).resolve().parent.parent
-FIGURES_DIR = ROOT / "reports" / "figures"
 
 # Known shock dates marked on charts and tested as structural breaks
 BREAKS = {
@@ -42,10 +44,14 @@ BREAKS = {
 
 def load_monthly():
     """Monthly macro table indexed by month start."""
+    assert_idle(PROCESSED_DIR)
+    assert_idle(PROCESSED_DIR.parent)
+    verify_manifest(PROCESSED_DIR, "preprocessing_manifest.json")
     path = PROCESSED_DIR / "monthly_macro.parquet"
     if not path.exists():
         raise FileNotFoundError(f"{path} not found - run: python -m src.preprocessing")
     df = pd.read_parquet(path).set_index("date")
+    validate_monthly_index(df.index)
     df.index.freq = "MS"
     return df
 
@@ -73,21 +79,37 @@ def stl_decompose(series, period=12):
     return result, round(float(strength), 3)
 
 
-def chow_test(series, break_date):
-    """Chow test for a shift in the mean at break_date (model: y = const + e)."""
-    s = series.dropna()
-    before, after = s[s.index < break_date], s[s.index >= break_date]
+def chow_test(series, break_date, transition="post"):
+    """Exploratory mean-shift test, not a test of every form of structural change.
+
+    Default: the whole event month is post-event. 'exclude' drops that mixed
+    month. Classical F p-values assume iid, homoskedastic errors; they are not
+    robust evidence of causality in autocorrelated macroeconomic time series.
+    """
+    pre, post, boundary = event_partition(series.index, break_date, transition)
+    before, after = series[pre].dropna(), series[post].dropna()
+    if min(len(before), len(after)) < 2:
+        raise ValueError("Mean-shift test requires at least two observations in each group")
+    s = pd.concat([before, after])
+    if not np.isfinite(s).all():
+        raise ValueError("Mean-shift test requires finite observations")
     rss_pooled = ((s - s.mean()) ** 2).sum()
     rss_split = ((before - before.mean()) ** 2).sum() + ((after - after.mean()) ** 2).sum()
     k, n = 1, len(s)
+    if rss_split <= np.finfo(float).eps:
+        raise ValueError("Mean-shift F test is undefined with zero residual variance")
     f_stat = ((rss_pooled - rss_split) / k) / (rss_split / (n - 2 * k))
-    p_value = 1 - stats.f.cdf(f_stat, k, n - 2 * k)
+    p_value = stats.f.sf(f_stat, k, n - 2 * k)
     return {"mean_before": round(float(before.mean()), 3), "mean_after": round(float(after.mean()), 3),
-            "f_stat": round(float(f_stat), 2), "p_value": round(float(p_value), 4)}
+            "f_stat": round(float(f_stat), 2), "p_value": round(float(p_value), 4),
+            "break_month": str(boundary.date()), "transition_month": transition,
+            "n_before": len(before), "n_after": len(after),
+            "model": "mean shift: y = constant + error",
+            "inference": "Exploratory classical F test; iid/homoskedastic assumptions, no causal claim"}
 
 
 def pass_through_lags(df, max_lag=6):
-    """Correlation of inflation (m/m) with the USD/KZT change k months earlier."""
+    """Descriptive lag correlation; the legacy name does not imply causality."""
     result = {}
     for lag in range(max_lag + 1):
         corr = df["inflation_mom"].corr(df["usd_kzt_change_pct"].shift(lag))
@@ -187,7 +209,7 @@ def plot_interactive(df):
     fig.write_html(FIGURES_DIR / "macro_interactive.html", include_plotlyjs="cdn")
 
 
-def run_analysis():
+def _run_analysis():
     """Run all tests, save figures and analysis_results.json; return the results dict."""
     df = load_monthly()
     daily = pd.read_parquet(PROCESSED_DIR / "usd_kzt_daily.parquet")
@@ -207,6 +229,11 @@ def run_analysis():
     levels_corr, changes_corr = correlations(df)
 
     results = {
+        "methodology": {
+            "transition_month": "post (whole event month)",
+            "chow_scope": "shift in mean only; classical p-values are not autocorrelation-robust",
+            "lag_correlations": "descriptive associations, not causal pass-through estimates",
+        },
         "stationarity": {name: stationarity_tests(s) for name, s in series_to_test.items()},
         "inflation_seasonal_strength": seasonal_strength,
         "inflation_mom_by_calendar_month": {int(k): float(v) for k, v in monthly_pattern.items()},
@@ -225,8 +252,32 @@ def run_analysis():
     plot_rate_vs_inflation(df)
     plot_interactive(df)
 
-    with open(PROCESSED_DIR / "analysis_results.json", "w", encoding="utf-8") as f:
-        json.dump(results, f, indent=2)
+    return results
+
+
+def run_analysis():
+    """Publish all figures and statistics only after the whole analysis succeeds."""
+    global FIGURES_DIR
+    original_figures = FIGURES_DIR
+    inputs = [PROCESSED_DIR / name for name in ("monthly_macro.parquet", "usd_kzt_daily.parquet")]
+    input_version = fingerprint(inputs)
+    with tempfile.TemporaryDirectory(prefix="analysis-") as tmp:
+        stage = Path(tmp)
+        FIGURES_DIR = stage / "figures"
+        try:
+            results = _run_analysis()
+        finally:
+            FIGURES_DIR = original_figures
+        write_json(stage / "analysis_results.json", results)
+        if fingerprint(inputs) != input_version:
+            raise ValueError("Analysis inputs changed; results were not published")
+        outputs = {"analysis_results.json": stage / "analysis_results.json"}
+        write_json(stage / "analysis_manifest.json", manifest(
+            "analysis", {"monthly_macro.parquet": PROCESSED_DIR / "monthly_macro.parquet"}, outputs))
+        files = {original_figures / p.name: p for p in (stage / "figures").iterdir()}
+        files[PROCESSED_DIR / "analysis_results.json"] = stage / "analysis_results.json"
+        files[PROCESSED_DIR / "analysis_manifest.json"] = stage / "analysis_manifest.json"
+        publish_files(files, PROCESSED_DIR.parent)
     return results
 
 
@@ -236,7 +287,7 @@ if __name__ == "__main__":
     for name, r in res["stationarity"].items():
         print(f"  {name:22s} {r['adf_p']:.3f} / {r['kpss_p']:.3f}  -> {r['verdict']}")
     print(f"Inflation seasonal strength: {res['inflation_seasonal_strength']}")
-    print("Pass-through corr(inflation_mom, usd_kzt_change lag k):", res["pass_through_corr_by_lag"])
+    print("Descriptive lag correlation (not causal pass-through):", res["pass_through_corr_by_lag"])
     print("Chow tests (inflation_mom):")
     for label, r in res["chow_tests_inflation_mom"].items():
         print(f"  {label:18s} mean {r['mean_before']} -> {r['mean_after']}, F={r['f_stat']}, p={r['p_value']}")

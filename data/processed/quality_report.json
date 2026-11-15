@@ -48,12 +48,13 @@
       "max": 18.0
     }
   },
+  "forecast_preprocessing": "causal forward fill; interpolation is EDA-only",
   "usd_kzt_filled_days": 55,
   "memory_optimization": {
     "usd_kzt_daily": {
-      "before_kb": 163.0,
-      "after_kb": 124.7,
-      "saved_pct": 23.5
+      "before_kb": 239.7,
+      "after_kb": 163.0,
+      "saved_pct": 32.0
     },
     "brent_daily": {
       "before_kb": 101.7,
@@ -79,16 +80,21 @@
       "before_kb": 36.7,
       "after_kb": 15.9,
       "saved_pct": 56.6
+    },
+    "monthly_forecasting": {
+      "before_kb": 36.7,
+      "after_kb": 15.9,
+      "saved_pct": 56.6
     }
   },
   "csv_vs_parquet_usd_kzt_daily": {
     "csv": {
-      "size_kb": 228.6,
-      "read_ms": 2.2
+      "size_kb": 293.6,
+      "read_ms": 0.91
     },
     "parquet": {
-      "size_kb": 117.7,
-      "read_ms": 5.16
+      "size_kb": 147.9,
+      "read_ms": 10.68
     }
   }
 }

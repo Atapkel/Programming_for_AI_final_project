@@ -1,13 +1,19 @@
 """Homepage for the Programming for AI final project: Kazakhstan economy explorer."""
 
 from pathlib import Path
+import sys
+
+# Both supported launchers resolve the same page modules from any working directory.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
 from pages.analysis import show_analysis
-from pages.predictions import show_predictions
+from pages.evaluation import show_evaluation, show_future
+from pages.research import show_quality, show_research, show_sql
 from pages.visualization import show_visualization
 from utils.data_utils import load_market_data
 from utils.ui import (
@@ -25,10 +31,14 @@ apply_theme()
 
 BANKNOTE = Path(__file__).parent / "assets" / "tenge_100.jpg"
 PAGES = {
-    "Home": None,
-    "Data Analysis": show_analysis,
-    "Visualization": show_visualization,
-    "Predictions": show_predictions,
+    "Overview": None,
+    "Data Explorer": show_analysis,
+    "Data Quality": show_quality,
+    "Advanced Data Analysis": show_research,
+    "Interactive Visualization": show_visualization,
+    "SQL Explorer": show_sql,
+    "Model Evaluation": show_evaluation,
+    "Future Forecasting": show_future,
 }
 
 with st.sidebar:
@@ -39,13 +49,20 @@ with st.sidebar:
     page = st.radio("Page", list(PAGES), label_visibility="collapsed")
 
 if PAGES[page]:
-    PAGES[page]()
+    try:
+        PAGES[page]()
+    except (OSError, ValueError) as error:
+        st.error(f"Cannot load consistent data: {error}. Rebuild the affected stage and reload this page.")
     footer()
     st.stop()
 
 
 def show_home():
-    market = load_market_data()
+    try:
+        market = load_market_data()
+    except (OSError, ValueError) as err:
+        st.error(f"Cannot load consistent market data: {err}")
+        return
     stamp = ""
     if market:
         stamp = f"Data as of {market['fx']['date'].iloc[-1]:%d.%m.%Y}"
@@ -118,9 +135,9 @@ def show_home():
 
     section("Explore the project", "Choose a section in the menu on the left.")
     cards = [
-        ("1", "Data Analysis", "Dataset structure, statistics, missing values and CSV downloads."),
-        ("2", "Visualization", "Interactive charts for any indicator and date range."),
-        ("3", "Predictions", "12-month forecasts from six models, tested on 36 months of data."),
+        ("1", "Explore & analyze", "Source datasets, calendar completeness, regimes, seasonality and SQL."),
+        ("2", "Evaluate models", "Compare six models at 1, 3, 6 and 12 months, training windows and predictor groups."),
+        ("3", "Forecast outlook", "Twelve target months with direct ML predictions and model-based SARIMA intervals."),
     ]
     for column, (number, title, text) in zip(st.columns(3), cards):
         with column:

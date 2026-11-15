@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "stage": "stage2_evaluation",
+  "run_id": "442dcfaacb9c4371976d875474a1f215",
+  "created_at_utc": "2026-11-15T08:38:41.491931+00:00",
+  "python": "3.14.3",
+  "dependencies": {
+    "pandas": "3.1.1",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "statsmodels": "0.15.0",
+    "scikit-learn": "1.9.1",
+    "pyarrow": "26.0.1",
+    "matplotlib": "3.11.2",
+    "plotly": "7.1.0",
+    "streamlit": "1.67.0",
+    "requests": "2.34.2"
+  },
+  "source_sha256": {
+    "src/__init__.py": "1ab2f23a833dd4130fb0267dbdbcdd658d557f6dd31a00314ffbb5b088b2ec77",
+    "src/analysis.py": "95f5cf8611d76593810ee525fb06725c49edc2503a763c849ccb4ceae0cc6a8c",
+    "src/artifacts.py": "848a268161219650af2c79b19f623ca0ed0992f2ea50e5e592e2ab6e6c2d61a1",
+    "src/dashboard_data.py": "001b2ae247a14ea2f1defe4f827152d9d5f2dfb6c9a1aab1e712980d8f319c62",
+    "src/data_loader.py": "4928cfe77fbf67b6b8fb78eb8ed1d5353ad52ba3c1da940e4d9fc1ed1fbdd931",
+    "src/database.py": "ced2b8f09cc48a3cdc36c8115ef2b1582c43a298d18c60750568ecaef3a08920",
+    "src/evaluation.py": "10694a372ed7839a22d443eead824c348899af6a2c9b9d6b76fecc471c54e9a9",
+    "src/forecasting.py": "05d68bd885f09d22493a62c62be31422973f647e13ee98cc0001660282b3f799",
+    "src/models.py": "44d871d0f5f97809a2b48c4097a7be4d37bb728b89b7a51563c0ab16138ff39b",
+    "src/paths.py": "a72ca9ba2d7d2d8a55856330b7c3a704af85ca7d711a32bbe236e07dedc38b29",
+    "src/preprocessing.py": "af56f1e0d275bbf17ad48ef0d4afffa2247d0488addf1f6c3b658bca03bbe701",
+    "src/validation.py": "1fbd53b2d6a3135415d92d0bc4a4a6bfe9f5898a141d87555a45a9bdccc2b838",
+    "main.py": "6009c3684042cacebab20da7129638a0ec9d08077d46468af9f3ad6ef7f964c8"
+  },
+  "inputs": {
+    "monthly_forecasting": "e6ee2133ec8a37f7cdda974af097586fcba427ab93c1086639c9a6c0df98b30c"
+  },
+  "outputs": {
+    "predictions.parquet": "3c4da18517088f25b358ce8a408851daadbb58cf37babf4c72ec0443e7a693c2",
+    "metrics.csv": "181ed8d7da3a0e88c5b4ae0c483e999c71e216f4c17add804aa328806db5f85c",
+    "intervals.csv": "efa8d0c03252baf1abf2e74da32f4921eb6a081e8c71b3f1c6203f1289e609d3",
+    "future.parquet": "19e15e983a323279ab071da529de236a0e4415f633842d1d246e1644b86bba06",
+    "explainability.csv": "184d6b596e796d145dcbb46896815c08175ba97a6b9c223fad4b88da32b04194",
+    "permutation.csv": "af4a5c00233247bc5bd5ba16ecd30c1762b93e5e2b30721892d49ee13ea485a3",
+    "input.parquet": "e6ee2133ec8a37f7cdda974af097586fcba427ab93c1086639c9a6c0df98b30c",
+    "diagnostics.json": "1122eea71c0065e2efcd05484f9b99f757f718f733a2d4c492df38bdae4885b6"
+  },
+  "horizons": [
+    1,
+    3,
+    6,
+    12
+  ],
+  "windows": [
+    "full",
+    "post2015",
+    "rolling120"
+  ],
+  "origins": 36,
+  "target_specs": {
+    "inflation_mom": {
+      "column": "inflation_mom",
+      "reg_column": "inflation_mom",
+      "start": "2005-02",
+      "exog": [
+        "usd_kzt_change_pct",
+        "brent_change_pct"
+      ],
+      "log": false,
+      "d": 0,
+      "seasonal_order": [
+        1,
+        0,
+        1,
+        12
+      ],
+      "ets": {
+        "trend": null,
+        "seasonal": "add",
+        "seasonal_periods": 12
+      },
+      "mase_m": 12,
+      "unit": "% m/m"
+    },
+    "usd_kzt": {
+      "column": "usd_kzt_avg",
+      "reg_column": "usd_kzt_change_pct",
+      "start": "2000-01",
+      "exog": [
+        "brent_change_pct"
+      ],
+      "log": true,
+      "d": 1,
+      "seasonal_order": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "ets": {
+        "trend": "add",
+        "damped_trend": true
+      },
+      "mase_m": 1,
+      "unit": "KZT per USD"
+    }
+  },
+  "ml_specs": {
+    "ridge": {
+      "alpha": 1.0,
+      "scaling": "StandardScaler fit on training pairs only"
+    },
+    "gradient_boosting": {
+      "n_estimators": 200,
+      "max_depth": 2,
+      "learning_rate": 0.05,
+      "subsample": 0.8,
+      "random_state": 42
+    }
+  },
+  "feature_specs": {
+    "own_observation_lags": [
+      0,
+      1,
+      2,
+      11
+    ],
+    "extra_observation_lags": [
+      0,
+      1,
+      2
+    ],
+    "calendar": "known target month dummies, February through December",
+    "ablation_support": "all-feature complete cases, identical anchors across variants"
+  },
+  "availability_policy": {
+    "evaluation": "retrospective with final-vintage observations, not a real-time vintage backtest",
+    "origin": "15th of the month immediately after the last observed month t; target month is t+h",
+    "sources": "previous-month CPI/FX/Brent assumed available by origin; past announced base-rate decisions only; actual release calendars and vintages unavailable",
+    "fx_gaps": "past-only daily forward fill; original source values preserved",
+    "annual_and_crisis_features": "descriptive only, not supplied to forecasting models"
+  },
+  "strategy": "Direct ML per horizon; statistical recursive paths; seasonal repetition",
+  "scale": "MASE: per-origin full past seasonal difference (12 inflation, 1 FX), common across windows",
+  "window_policy": "post2015 starts September 2015; rolling120 retains 10 seasonal cycles",
+  "uncertainty": "SARIMA marginal model-based 95% prediction intervals; parameter/revision uncertainty excluded",
+  "selection": "ARIMA AIC on first origin only per window; fixed ML hyperparameters; exploratory comparisons, no untouched final test"
+}
