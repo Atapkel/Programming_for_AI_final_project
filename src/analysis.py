@@ -117,6 +117,24 @@ def pass_through_lags(df, max_lag=6):
     return result
 
 
+def rolling_means(df, columns=("usd_kzt_avg", "inflation_mom"), window=12):
+    """Trailing rolling means (pandas .rolling); NaN until `window` months exist."""
+    return pd.DataFrame({f"{col}_rolling{window}": df[col].rolling(window, min_periods=window).mean()
+                         for col in columns})
+
+
+def rolling_summary(df, rolled, window=12):
+    """Latest value and its trailing mean for each smoothed series."""
+    summary = {}
+    for col in rolled.columns:
+        source = col.removesuffix(f"_rolling{window}")
+        last = rolled[col].last_valid_index()
+        summary[source] = {"window_months": window, "month": str(last.date()),
+                           "value": round(float(df.loc[last, source]), 3),
+                           "rolling_mean": round(float(rolled.loc[last, col]), 3)}
+    return summary
+
+
 def correlations(df):
     """Correlation matrices in levels and in monthly changes (since 2016, after the float)."""
     recent = df.loc["2016":]
@@ -147,7 +165,8 @@ def plot_usd_kzt(daily):
         # alternate label heights so neighbouring breaks (2014, 2015) do not overlap
         y = top * (0.97 if i % 2 == 0 else 0.88)
         ax.text(pd.Timestamp(date), y, f" {label}", fontsize=8, color="tab:red", va="top")
-    ax.set(title="Official USD/KZT exchange rate, 2000–2026", ylabel="KZT per USD", xlabel="")
+    years = f"{daily['date'].min():%Y}–{daily['date'].max():%Y}"
+    ax.set(title=f"Official USD/KZT exchange rate, {years}", ylabel="KZT per USD", xlabel="")
     ax.grid(alpha=0.3)
     save(fig, "01_usd_kzt_breaks.png")
 
@@ -192,6 +211,24 @@ def plot_rate_vs_inflation(df):
     save(fig, "05_base_rate_vs_inflation.png")
 
 
+def plot_rolling_means(df, rolled, window=12):
+    """Monthly series with their trailing rolling mean, one panel per series."""
+    labels = {"usd_kzt_avg": ("USD/KZT, monthly average", "KZT per USD"),
+              "inflation_mom": ("CPI inflation", "% m/m")}
+    fig, axes = plt.subplots(len(rolled.columns), 1, figsize=(11, 6.5), sharex=True)
+    for ax, col in zip(np.atleast_1d(axes), rolled.columns):
+        source = col.removesuffix(f"_rolling{window}")
+        title, unit = labels.get(source, (source, ""))
+        ax.plot(df.index, df[source], lw=0.8, color="tab:gray", alpha=0.7, label="monthly")
+        ax.plot(rolled.index, rolled[col], lw=2, color="tab:blue", label=f"{window}-month rolling mean")
+        ax.set(title=title, ylabel=unit)
+        ax.legend(loc="upper left")
+        ax.grid(alpha=0.3)
+    fig.suptitle(f"Trailing {window}-month rolling means", y=1.0)
+    fig.tight_layout()
+    save(fig, "07_rolling_means.png")
+
+
 def plot_interactive(df):
     """Interactive Plotly chart: exchange rate, inflation and base rate on a shared time axis."""
     fig = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.06,
@@ -227,6 +264,7 @@ def _run_analysis():
     stl_result, seasonal_strength = stl_decompose(inflation)
     monthly_pattern = inflation.groupby(inflation.index.month).mean().round(3)
     levels_corr, changes_corr = correlations(df)
+    rolled = rolling_means(df)
 
     results = {
         "methodology": {
@@ -237,6 +275,7 @@ def _run_analysis():
         "stationarity": {name: stationarity_tests(s) for name, s in series_to_test.items()},
         "inflation_seasonal_strength": seasonal_strength,
         "inflation_mom_by_calendar_month": {int(k): float(v) for k, v in monthly_pattern.items()},
+        "rolling_12m_mean_latest": rolling_summary(df, rolled),
         "pass_through_corr_by_lag": pass_through_lags(df),
         "chow_tests_inflation_mom": {label: chow_test(inflation, date) for date, label in BREAKS.items()
                                      if pd.Timestamp(date) > inflation.index.min()},
@@ -250,6 +289,7 @@ def _run_analysis():
     plot_acf_pacf(inflation)
     plot_heatmap(changes_corr, "Correlation of monthly changes (2016+)", "04_corr_changes.png")
     plot_rate_vs_inflation(df)
+    plot_rolling_means(df, rolled)
     plot_interactive(df)
 
     return results

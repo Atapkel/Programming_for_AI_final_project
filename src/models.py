@@ -12,7 +12,7 @@ Models:
     gradient_boosting            - GradientBoostingRegressor on the same features
 
 Outputs (data/processed/):
-    model_metrics.csv            - MAE, RMSE, sMAPE, MASE, fit time per model
+    model_metrics.csv            - MAE, RMSE, sMAPE, MASE, Diebold-Mariano vs naive, fit time
     errors_by_year.csv           - MAE per calendar year of the test window
     backtest_predictions.parquet - actual vs forecast for every test month
     forecasts.parquet            - next 12 months forecast (for the dashboard)
@@ -35,6 +35,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from scipy import stats
 from sklearn.base import clone
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.linear_model import Ridge
@@ -311,8 +312,30 @@ def smape(actual, forecast):
     return float(np.mean(ratio) * 100)
 
 
+def diebold_mariano(errors_model, errors_base, horizon=1):
+    """Diebold-Mariano test of equal absolute-error accuracy, HLN small-sample corrected.
+
+    d_t = |e_model| - |e_base|. Negative statistic: the model has smaller errors.
+    Two-sided p-value from Student t with n-1 df (Harvey, Leybourne, Newbold 1997).
+    Returns (nan, nan) when the loss differential has no variance (identical forecasts).
+    """
+    d = np.abs(np.asarray(errors_model, dtype=float)) - np.abs(np.asarray(errors_base, dtype=float))
+    n = len(d)
+    if n < 3 or not np.isfinite(d).all():
+        return np.nan, np.nan
+    centered = d - d.mean()
+    autocov = [np.dot(centered[k:], centered[:n - k]) / n for k in range(horizon)]
+    variance = (autocov[0] + 2 * sum(autocov[1:])) / n
+    if not variance > 0:
+        return np.nan, np.nan
+    correction = np.sqrt((n + 1 - 2 * horizon + horizon * (horizon - 1) / n) / n)
+    statistic = correction * d.mean() / np.sqrt(variance)
+    return float(statistic), float(2 * stats.t.sf(abs(statistic), df=n - 1))
+
+
 def compute_metrics(predictions, fit_seconds, train_y, m):
-    """MAE, RMSE, sMAPE, MASE (scaled by the in-sample naive error with lag m)."""
+    """MAE, RMSE, sMAPE, MASE (scaled by the in-sample naive error with lag m),
+    plus a Diebold-Mariano test of each model against the naive baseline."""
     if m < 1 or len(train_y) <= m or not np.isfinite(predictions.to_numpy()).all():
         raise ValueError("Metrics require finite predictions and sufficient training history")
     scale = np.mean(np.abs(train_y.values[m:] - train_y.values[:-m]))
@@ -320,12 +343,16 @@ def compute_metrics(predictions, fit_seconds, train_y, m):
     rows = []
     for name in fit_seconds:
         err = predictions[name] - actual
+        dm_stat, dm_p = (diebold_mariano(err, predictions["naive"] - actual)
+                         if name != "naive" and "naive" in predictions else (np.nan, np.nan))
         rows.append({
             "model": name,
             "MAE": float(np.mean(np.abs(err))),
             "RMSE": float(np.sqrt(np.mean(err ** 2))),
             "sMAPE_%": smape(actual, predictions[name]),
             "MASE": float(np.mean(np.abs(err)) / scale) if scale > 0 else np.nan,
+            "DM_stat_vs_naive": dm_stat,
+            "DM_p_vs_naive": dm_p,
             "fit_time_s": fit_seconds[name],
             "fallback_count": predictions.attrs.get("fit_status", {}).get(name, []).count("fallback_naive"),
         })
@@ -492,7 +519,8 @@ def validate_model_outputs(directory):
         training = actual.loc[actual.index < wide.index.min()]
         computed = compute_metrics(wide, dict.fromkeys(expected_models, 0.), training, cfg["mase_m"]).set_index("model")
         saved = scores.set_index("model").loc[computed.index]
-        columns = ["MAE", "RMSE", "sMAPE_%", "MASE", "fallback_count", "eligible"]
+        columns = ["MAE", "RMSE", "sMAPE_%", "MASE", "DM_stat_vs_naive", "DM_p_vs_naive",
+                   "fallback_count", "eligible"]
         if not np.allclose(saved[columns].to_numpy(dtype=float), computed[columns].to_numpy(dtype=float), equal_nan=True):
             raise ValueError("Metrics/fallback flags do not match saved backtest predictions")
         expected = pd.date_range(actual.index[-1] + pd.offsets.MonthBegin(), periods=HORIZON, freq="MS")

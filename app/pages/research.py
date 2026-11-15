@@ -99,8 +99,40 @@ def show_quality():
         st.caption(f"{indicator}: {single.year.min()}–{single.year.max()}, {single.value.isna().sum()} missing values; mixed indicator units are not pooled.")
     else:
         st.caption("Irregular policy decisions: no uniform calendar expected.")
+    show_storage_benchmarks(report)
     download(audit, "saved_quality_audit")
     st.download_button("Download full quality report", json.dumps(report, indent=2), "quality_report.json", "application/json")
+
+
+def show_storage_benchmarks(report):
+    """CSV vs Parquet, dtype optimisation and chunked loading, as measured in preprocessing."""
+    section("Storage format and memory", "Measured during preprocessing; justifies Parquet and dtype choices")
+    formats = report.get("csv_vs_parquet_usd_kzt_daily", {})
+    rows = [{"format": fmt, **values} for fmt, values in formats.items() if isinstance(values, dict)]
+    if rows:
+        st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
+        if "parquet_size_saving_pct" in formats:
+            st.caption(f"USD/KZT daily table. Parquet file is {formats['parquet_size_saving_pct']}% smaller and keeps column types "
+                       f"without parsing. Timing: {formats.get('method', 'single pass')}. At this table size read times are "
+                       "milliseconds for both formats, so size and type safety, not speed, are the deciding factors.")
+        else:
+            st.caption("Legacy measurement without warm-up; rerun preprocessing for comparable timings.")
+    memory = report.get("memory_optimization")
+    if memory:
+        table = pd.DataFrame(memory).T.reset_index(names="table")
+        st.dataframe(table, hide_index=True, width="stretch")
+        st.caption("Memory before/after dtype optimisation (float64→float32, smallest integer type, text→category).")
+    chunked = report.get("chunked_loading")
+    if chunked:
+        rows = [{"source": name, "rows": r["rows"], "chunksize": r["chunksize"], "chunks": r["chunks"],
+                 "full peak KB": r["full_read"]["peak_kb"], "chunked peak KB": r["chunked_read"]["peak_kb"],
+                 "full result KB": r["full_read"]["result_kb"], "chunked result KB": r["chunked_read"]["result_kb"],
+                 "full ms": r["full_read"]["time_ms"], "chunked ms": r["chunked_read"]["time_ms"],
+                 "same values": r["same_values"]} for name, r in chunked.items()]
+        st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
+        st.caption("Whole-file read vs pd.read_csv(chunksize=…) with per-chunk typing. Peak memory is the tracemalloc peak while loading. "
+                   "The loaded table is always smaller after chunked typing; peak savings and speed depend on file size, and on files "
+                   "this small the per-chunk overhead can outweigh them. The method scales to files that do not fit in memory.")
 
 
 def add_events(figure, start, end):
@@ -131,7 +163,7 @@ def show_research():
         return
     st.caption(f"EDA monthly data: {monthly.date.min():%Y-%m} – {monthly.date.max():%Y-%m}. "
                "Filled FX observations are for descriptive plots; model experiments use the separate causal table.")
-    tabs = st.tabs(["Trends", "Regimes", "Seasonality & volatility", "Correlations & lags", "Statistical findings"])
+    tabs = st.tabs(["Trends", "Regimes", "Seasonality, rolling mean & volatility", "Correlations & lags", "Statistical findings"])
     with tabs[0]:
         selected = st.multiselect("Indicators", list(SERIES), default=["usd_kzt_avg", "brent_avg"], format_func=SERIES.get)
         normalize = st.toggle("Index selected series to 100", value=True)
@@ -176,13 +208,27 @@ def show_research():
         seasonal = monthly.assign(month=monthly.date.dt.month)
         st.plotly_chart(px.box(seasonal, x="month", y="inflation_mom", title="Inflation by calendar month · % m/m"), width="stretch")
         st.dataframe(seasonal.groupby("month").inflation_mom.agg(["count", "mean", "std"]), width="stretch")
+        section("Rolling mean", "Trailing moving average smooths month-to-month noise")
+        col_a, col_b = st.columns(2)
+        rolling_col = col_a.selectbox("Series", list(SERIES), format_func=SERIES.get, key="rolling_series")
+        window = col_b.slider("Window, months", 3, 36, 12, key="rolling_window")
+        series = monthly.set_index("date")[rolling_col]
+        smoothed = series.rolling(window, min_periods=window).mean()
+        figure = go.Figure()
+        figure.add_trace(go.Scatter(x=series.index, y=series, name="Monthly", line=dict(width=1), opacity=.55))
+        figure.add_trace(go.Scatter(x=smoothed.index, y=smoothed, name=f"{window}-month rolling mean", line=dict(width=3)))
+        add_events(figure, start, end)
+        figure.update_layout(height=380, title=f"{SERIES[rolling_col]} · {window}-month trailing mean", hovermode="x unified")
+        st.plotly_chart(figure, width="stretch")
+        st.caption(f"Each point averages the current and previous {window - 1} months; the first {window - 1} months of the "
+                   "selected range have no value.")
         volatility = monthly[["date", "usd_kzt_change_pct", "brent_change_pct"]].set_index("date").rolling(12, min_periods=12).std()
         st.plotly_chart(px.line(volatility, title="Trailing 12-month standard deviation of monthly changes · percentage points"), width="stretch")
         st.caption("Not annualized. Twelve complete months are required. Short samples and structural shocks can dominate volatility estimates.")
         download(volatility.reset_index(), "rolling_volatility")
-        with st.expander("Saved full-history STL and ACF/PACF figures"):
+        with st.expander("Saved full-history STL, ACF/PACF and rolling-mean figures"):
             st.caption(f"STL seasonal strength on full saved history: {results['inflation_seasonal_strength']:.3f}; independent of the date filter above.")
-            for name in ("02_inflation_stl.png", "03_inflation_acf_pacf.png"):
+            for name in ("02_inflation_stl.png", "03_inflation_acf_pacf.png", "07_rolling_means.png"):
                 path = FIGURES_DIR / name
                 if path.exists():
                     st.image(str(path), width="stretch")

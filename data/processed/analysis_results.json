@@ -56,6 +56,20 @@
     "11": 1.012,
     "12": 0.797
   },
+  "rolling_12m_mean_latest": {
+    "usd_kzt_avg": {
+      "window_months": 12,
+      "month": "2026-10-01",
+      "value": 450.893,
+      "rolling_mean": 482.501
+    },
+    "inflation_mom": {
+      "window_months": 12,
+      "month": "2026-09-01",
+      "value": 0.538,
+      "rolling_mean": 0.739
+    }
+  },
   "pass_through_corr_by_lag": {
     "0": 0.184,
     "1": 0.31,

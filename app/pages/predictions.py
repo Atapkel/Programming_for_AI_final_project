@@ -111,7 +111,7 @@ def show_predictions():
     with backtest_tab:
         show_backtest(backtest, metrics, best, info, target)
     with ranking_tab:
-        show_ranking(metrics, backtest, results["errors_by_year"], best, info, target)
+        show_ranking(metrics, backtest, results["errors_by_year"], best, info, target, history)
     with method_tab:
         show_method(summary)
 
@@ -296,7 +296,15 @@ def show_backtest(backtest, metrics, best, info, target):
     st.plotly_chart(figure, width="stretch")
 
 
-def show_ranking(metrics, backtest, errors_by_year, best, info, target):
+def dm_text(p_value, statistic):
+    """Diebold-Mariano p-value with a direction marker; dash when not tested."""
+    if not np.isfinite(p_value):
+        return "–"
+    arrow = "▲" if statistic < 0 else "▼"
+    return f"{p_value:.2f} {arrow}" if p_value < 0.05 else f"{p_value:.2f}"
+
+
+def show_ranking(metrics, backtest, errors_by_year, best, info, target, history=None):
     naive_mae = metrics.loc[metrics["model"] == "naive", "MAE"].iloc[0]
     directions = direction_accuracy(backtest)
     worst_gain = max(abs(1 - row.MAE / naive_mae) for row in metrics.itertuples()) or 1
@@ -318,6 +326,7 @@ def show_ranking(metrics, backtest, errors_by_year, best, info, target):
             f'<td class="r">{row.MAE:.{digits}f}</td>'
             f'<td class="r">{row.RMSE:.{digits}f}</td>'
             f'<td class="r">{row.MASE:.2f}</td>'
+            f'<td class="r">{dm_text(getattr(row, "DM_p_vs_naive", np.nan), getattr(row, "DM_stat_vs_naive", np.nan))}</td>'
             f'<td class="r">{direction_text(directions, row.model)}</td>'
             f'<td><span class="kz-bar"><span style="width:{width:.0f}%;background:{bar_color}"></span></span>'
             f'<span style="color:{bar_color};font-weight:600">{gain:+.1f}%</span></td>'
@@ -326,14 +335,33 @@ def show_ranking(metrics, backtest, errors_by_year, best, info, target):
     html(
         '<table class="kz-table"><thead><tr><th>#</th><th>Model</th>'
         f'<th class="r">MAE, {escape(info["unit"])}</th><th class="r">RMSE</th>'
-        '<th class="r">MASE</th><th class="r">Direction</th><th>vs naive</th></tr></thead>'
+        '<th class="r">MASE</th><th class="r">DM p vs naive</th><th class="r">Direction</th>'
+        '<th>vs naive</th></tr></thead>'
         f'<tbody>{"".join(rows)}</tbody></table>'
     )
     st.caption(
         "Reliable runs first, then MAE (average absolute miss). Failed-fit fallbacks are flagged above. RMSE punishes large misses more. "
         "MASE uses the training naive scale (seasonal for inflation), not test-baseline superiority. Direction = share of months where the "
-        "model correctly predicted whether the value would go up or down."
+        "model correctly predicted whether the value would go up or down. DM p = two-sided Diebold–Mariano test of equal absolute "
+        "error against naive (HLN-corrected): p < 0.05 means the difference is unlikely to be chance; ▲ better, ▼ worse than naive."
     )
+    if "DM_p_vs_naive" in metrics:
+        tested = metrics[metrics["model"] != "naive"].dropna(subset=["DM_p_vs_naive"])
+        better = tested[(tested["DM_p_vs_naive"] < 0.05) & (tested["DM_stat_vs_naive"] < 0)]
+        if not tested.empty and better.empty:
+            callout("<b>No model beats the naive forecast significantly</b> at the 5% level over this 36-month test. "
+                    "MAE differences between the leading models and naive are within what chance alone could produce.",
+                    warn=True)
+    if target == "usd_kzt" and history is not None and not backtest.empty:
+        moves = history.diff().abs()
+        test_start = backtest["date"].min()
+        train_move = moves[moves.index < test_start].mean()
+        managed_move = moves[moves.index < "2015-08-01"].mean()
+        test_move = moves[moves.index >= test_start].mean()
+        st.caption(f"Why every USD/KZT MASE exceeds 1, even naive: the scale is the average monthly move in KZT during training "
+                   f"({train_move:.1f} ₸), which includes years when the rate was far lower and mostly managed "
+                   f"({managed_move:.1f} ₸ per month before August 2015). Test-period moves average {test_move:.1f} ₸. "
+                   "Compare MASE across models, not against 1.")
 
     section("Error by year", "MAE of each model in each year of the test period; darker = larger error")
     yearly = errors_by_year[errors_by_year["target"] == target].drop(columns="target")

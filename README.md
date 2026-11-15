@@ -52,7 +52,7 @@ reports/figures/         charts for the report (PNG + interactive HTML)
 
 ## Setup
 
-Python 3.12–3.14. Stage 1 was verified locally with Python 3.14.3; CI is configured for 3.12 and 3.14.
+Python 3.12–3.14. The committed results were rebuilt with Python 3.14.2; CI is configured for 3.12 and 3.14.
 
 ```bash
 python -m venv .venv
@@ -88,7 +88,16 @@ streamlit run app.py
 - **Preprocessing:** daily FX gaps are interpolated and flagged for retrospective EDA; forecasting uses a separate `monthly_forecasting.parquet` table with past-only forward filling. Original values are retained in raw CSV and `source_usd_kzt`. Source validation rejects duplicates, empty responses and missing CPI months;
   monthly table with averages, end-of-month values, m/m and y/y inflation, base rate in force,
   real rate and exchange-rate regime. Data audit and memory/format measurements in
-  `data/processed/quality_report.json`.
+  `data/processed/quality_report.json`, also shown on the dashboard's Data Quality page:
+  - CSV vs Parquet (mean of 10 runs after a warm-up; CSV parses dates so both return the same typed table):
+    the Parquet file is ≈50% smaller and writes ≈6× faster; read times are about equal at this size (≈2.6–2.9 ms).
+  - dtype optimisation (float32, smallest ints, categories) cuts table memory by ≈32% for the daily FX table.
+  - chunked loading (`pd.read_csv(chunksize=2000)` with per-chunk typing) vs a whole-file read, measured with
+    `tracemalloc`: the loaded table is ≈25% smaller and peak memory drops ≈21% for the FX file, but on files this
+    small chunking is ≈2–3× slower and gives no peak saving for Brent. It is kept as the method that scales to large files.
+- **Rolling statistics:** 12-month trailing means (`pandas .rolling`) of USD/KZT and inflation
+  (`reports/figures/07_rolling_means.png`), an adjustable-window rolling mean on the dashboard,
+  a SQL rolling `AVG` window (query 09) and 12-month rolling volatility.
 - **Database:** normalized schema `sources → indicators → observations` plus the derived
   `monthly_macro` table ([ER diagram](docs/er_diagram.md)). 11 queries with JOINs,
   GROUP BY/HAVING, a subquery, CTEs and window functions (`LAG`, `RANK`, rolling `AVG`).
@@ -98,7 +107,7 @@ streamlit run app.py
 - **Forecasting:** expanding-window one-step-ahead backtest on the last 36 months (models are
   refit every month on earlier observation months). Final-vintage data are used with explicit, unverified publication assumptions; this is not a real-time vintage backtest. Models: naive, seasonal naive, SARIMA/ARIMA
   (order chosen by AIC), ETS, Ridge lag regression, gradient boosting. Metrics: MAE, RMSE,
-  sMAPE, MASE, fit time, MAE by year. SARIMA candidates must converge; unsuccessful fits receive at most one cold retry. Explicit naive fallbacks are flagged and excluded from best-model selection.
+  sMAPE, MASE, fit time, MAE by year, and a Diebold–Mariano test of each model against naive. SARIMA candidates must converge; unsuccessful fits receive at most one cold retry. Explicit naive fallbacks are flagged and excluded from best-model selection.
 
 ## Main results
 
@@ -107,7 +116,10 @@ streamlit run app.py
 - After the 2015 float the average monthly exchange-rate move tripled (0.73% → 2.18%).
 - Inflation and earlier FX changes have a descriptive lagged association (correlation 0.31 at lag 1, about 0 after 4 months). This does not establish causal pass-through.
 - The exploratory mean-shift test for monthly inflation at the 2022 event gives a classical p-value below 0.001. It is not a robust test of all structural changes or causality.
-- Stage 1 rebuild: inflation SARIMA MAE **0.194366** vs **0.200151** for naive (2.89% lower MAE); USD/KZT gradient boosting MAE **7.854948** vs **8.848591** (11.23% lower MAE). These are one-step retrospective errors, not validated 12-month accuracy.
+- Stage 1 rebuild: inflation SARIMA (2,0,2) MAE **0.183645** vs **0.200151** for naive (8.25% lower MAE); USD/KZT gradient boosting MAE **7.854948** vs **8.848591** (11.23% lower MAE). These are one-step retrospective errors, not validated 12-month accuracy.
+- **No model beats naive significantly.** Diebold–Mariano tests (absolute-error loss, HLN correction, 36 test months) give p = 0.40 for SARIMA on inflation and p = 0.19 for gradient boosting on USD/KZT. Gradient boosting (p = 0.04) and seasonal naive (p = 0.009) are significantly *worse* than naive for inflation. The ranking is therefore suggestive, not conclusive.
+- USD/KZT MASE is above 2 for every model, including naive. MASE divides by the average monthly move in KZT during training (≈3.5 ₸), and much of the training period is the low-level managed-rate era (≈1.0 ₸ per month before August 2015), while test-period moves average ≈8.9 ₸. Compare MASE across models, not against 1.
+- ARIMA order selection by AIC depends on which candidates converge, and borderline candidates can converge on one machine but not another (same package versions, different CPU/Python patch). Rebuilding on another computer can therefore change the selected order and the SARIMA/ARIMA numbers above. Produce the final results on one machine and present the committed artifacts; the dashboard never retrains.
 - Stage 2 adds future Ridge and Gradient Boosting predictions for months 1–12 using independent direct horizon models. Inputs end at the last observed month; future exogenous values are never fabricated. The original one-step experiment remains available under Model Evaluation → Stage 1 reference.
 - Reproducibility details, old/new metrics and remaining limitations: [Stage 1 report](docs/stage1_reliability.md).
 
@@ -139,8 +151,8 @@ refuse mixed outputs. Do not delete these blindly; see the recovery procedure in
 the Stage 1 report. Use one pipeline writer at a time.
 
 Tests use synthetic fixtures and saved small datasets; they do not download data
-or train the full model grid. GitHub Actions is configured but has not run until
-these changes are committed and pushed by the team.
+or train the full model grid. GitHub Actions runs the test suite on every push and
+pull request (Python 3.12 and 3.14); check the repository's Actions tab for the latest status.
 
 ## Stage 2: evaluation and unified dashboard
 

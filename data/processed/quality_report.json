@@ -90,11 +90,57 @@
   "csv_vs_parquet_usd_kzt_daily": {
     "csv": {
       "size_kb": 293.6,
-      "read_ms": 0.91
+      "write_ms": 25.48,
+      "read_ms": 2.85,
+      "memory_kb": 239.7,
+      "types_preserved": true
     },
     "parquet": {
       "size_kb": 147.9,
-      "read_ms": 10.68
+      "write_ms": 4.03,
+      "read_ms": 2.64,
+      "memory_kb": 239.7,
+      "types_preserved": true
+    },
+    "parquet_size_saving_pct": 49.6,
+    "method": "mean of 10 runs after one warm-up run; CSV parses dates"
+  },
+  "chunked_loading": {
+    "usd_kzt": {
+      "file": "usd_kzt_daily.csv",
+      "rows": 9758,
+      "chunksize": 2000,
+      "chunks": 5,
+      "full_read": {
+        "peak_kb": 725.0,
+        "time_ms": 5.88,
+        "result_kb": 152.6
+      },
+      "chunked_read": {
+        "peak_kb": 571.9,
+        "time_ms": 14.03,
+        "result_kb": 114.5
+      },
+      "same_values": true,
+      "note": "peak = tracemalloc peak during loading; float32 keeps ~7 significant digits"
+    },
+    "brent": {
+      "file": "brent_daily.csv",
+      "rows": 6501,
+      "chunksize": 2000,
+      "chunks": 4,
+      "full_read": {
+        "peak_kb": 486.4,
+        "time_ms": 3.89,
+        "result_kb": 101.7
+      },
+      "chunked_read": {
+        "peak_kb": 534.2,
+        "time_ms": 12.28,
+        "result_kb": 76.3
+      },
+      "same_values": true,
+      "note": "peak = tracemalloc peak during loading; float32 keeps ~7 significant digits"
     }
   }
 }

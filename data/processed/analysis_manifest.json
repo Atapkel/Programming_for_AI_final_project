@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "stage": "analysis",
-  "run_id": "c3c7269651264388817e00fc40a0b2ef",
-  "created_at_utc": "2026-11-15T07:24:47.928235+00:00",
-  "python": "3.14.3",
+  "run_id": "ceb9693b21c446958dbe3c3902f2b121",
+  "created_at_utc": "2026-11-15T15:39:16.047715+00:00",
+  "python": "3.14.2",
   "dependencies": {
     "pandas": "3.1.1",
     "numpy": "2.5.4",
@@ -18,21 +18,23 @@
   },
   "source_sha256": {
     "src/__init__.py": "1ab2f23a833dd4130fb0267dbdbcdd658d557f6dd31a00314ffbb5b088b2ec77",
-    "src/analysis.py": "95f5cf8611d76593810ee525fb06725c49edc2503a763c849ccb4ceae0cc6a8c",
+    "src/analysis.py": "da91fb27e03748d7ca160169d271393d42a907648df50457fc0021cfa7ff381d",
     "src/artifacts.py": "848a268161219650af2c79b19f623ca0ed0992f2ea50e5e592e2ab6e6c2d61a1",
-    "src/dashboard_data.py": "13d5ef22b43772140b0e124b6965f1ab96f7ac2621e6760ba20867f7a11fa124",
+    "src/dashboard_data.py": "001b2ae247a14ea2f1defe4f827152d9d5f2dfb6c9a1aab1e712980d8f319c62",
     "src/data_loader.py": "4928cfe77fbf67b6b8fb78eb8ed1d5353ad52ba3c1da940e4d9fc1ed1fbdd931",
     "src/database.py": "ced2b8f09cc48a3cdc36c8115ef2b1582c43a298d18c60750568ecaef3a08920",
-    "src/models.py": "44d871d0f5f97809a2b48c4097a7be4d37bb728b89b7a51563c0ab16138ff39b",
+    "src/evaluation.py": "10694a372ed7839a22d443eead824c348899af6a2c9b9d6b76fecc471c54e9a9",
+    "src/forecasting.py": "05d68bd885f09d22493a62c62be31422973f647e13ee98cc0001660282b3f799",
+    "src/models.py": "7ab1e3a81537e174dc22c992c7024f1cecb3813b8598cfe363cd8534726febf4",
     "src/paths.py": "a72ca9ba2d7d2d8a55856330b7c3a704af85ca7d711a32bbe236e07dedc38b29",
-    "src/preprocessing.py": "af56f1e0d275bbf17ad48ef0d4afffa2247d0488addf1f6c3b658bca03bbe701",
+    "src/preprocessing.py": "87a159243038b911d47f2368a90f635e407ec0f9dd120e2f51f5ff1c9d0b7162",
     "src/validation.py": "1fbd53b2d6a3135415d92d0bc4a4a6bfe9f5898a141d87555a45a9bdccc2b838",
-    "main.py": "6aae5c00e4a5099e4fc9a6f4970dcd07d51f46b55a5d9213c41ce90b917aac84"
+    "main.py": "93df67d6bd4dd81d459af1b7bbb0ec8b74fd3b91e311ff4ab735fdc6e7aa9b05"
   },
   "inputs": {
-    "monthly_macro.parquet": "a74adeb1409427132880dc6b9ac9a4d149f338f5d13fc3b02e271a6f596192cd"
+    "monthly_macro.parquet": "24db758a7088173b20951f9c4d412244ab67e2e7eeff6a299b3f3bb4c74a0e65"
   },
   "outputs": {
-    "analysis_results.json": "d9dbffa23812f3e31f6eca558fa1545c99857daa52b463b92a863dc3f495ac6d"
+    "analysis_results.json": "2a6dee63633eec5b41dae2eefc4de4b219258054c91e6e8b1e9bf787c45f1ed2"
   }
 }

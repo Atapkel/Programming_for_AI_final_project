@@ -118,6 +118,33 @@ Explanations:
   SARIMA inflation has worse RMSE than naive, so “best” here means lowest MAE only.
 - One-step accuracy still does not validate 12-month accuracy or interval coverage.
 
+### Rebuild of 15.11.2026 (Python 3.14.2, same pinned packages, different machine)
+
+The committed artifacts were rebuilt after the benchmark fixes and the addition of
+Diebold–Mariano tests. Inputs (`model_input.parquet`) are byte-identical to the run
+above, yet the AIC-selected orders differ: inflation `(2,0,2)` instead of `(2,0,1)`
+and FX `(1,1,0)` instead of `(1,1,1)`. On this machine the `(2,0,2)` inflation
+candidate converges; on the 3.14.3 machine it failed both attempts. Repeated runs on
+one machine are identical, with and without single-threaded BLAS, so the difference
+comes from CPU-specific floating-point paths (OpenBLAS `DYNAMIC_ARCH`) acting on
+borderline optimiser convergence, not from randomness in the code.
+
+| Target | Model | MAE | RMSE | DM p vs naive |
+|---|---|---:|---:|---:|
+| Inflation m/m | SARIMA (2,0,2) | 0.183645 | 0.232385 | 0.40 |
+| Inflation m/m | Naive | 0.200151 | 0.240805 | – |
+| USD/KZT | Gradient boosting | 7.854948 | 10.084513 | 0.19 |
+| USD/KZT | ARIMA (1,1,0) | 8.178540 | 10.746701 | 0.26 |
+| USD/KZT | Naive | 8.848591 | 11.112543 | – |
+
+- Best MAE gains versus naive: **8.25%** (inflation) and **11.23%** (FX). With order
+  `(2,0,2)` SARIMA also has lower RMSE than naive for inflation.
+- Diebold–Mariano tests (absolute loss, HLN correction, two-sided, n = 36) find no
+  model significantly better than naive; the best-model label is a point ranking only.
+- The compounded 12-month SARIMA inflation path is 9.50% under `(2,0,2)`.
+- Practical rule: produce the final submission artifacts on one machine and present
+  those; the dashboard reads saved files and never retrains.
+
 ## Safe publication and recovery
 
 Downloads stage and validate all requested sources before replacing any source.

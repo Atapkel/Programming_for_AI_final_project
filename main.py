@@ -105,13 +105,6 @@ def step_full_pipeline():
         print(f"Published complete pipeline run {run['run_id']}")
 
 
-PIPELINE = [
-    ("Preprocess data", step_preprocess),
-    ("Build database and run SQL", step_database),
-    ("Time-series analysis", step_analysis),
-    ("Train and evaluate models", step_models),
-]
-
 MENU = {
     "1": ("Download data", step_download),
     "2": ("Preprocess data", step_preprocess),
@@ -152,7 +145,11 @@ def main():
     print("Kazakhstan macroeconomic indicators and exchange rate")
     while True:
         print("\n" + "\n".join(f"  {key}. {title}" for key, (title, _) in MENU.items()))
-        choice = input("Choose an option: ").strip()
+        try:
+            choice = input("Choose an option: ").strip()
+        except (KeyboardInterrupt, EOFError):  # Ctrl+C / Ctrl+D at the menu prompt
+            print("\nBye!")
+            break
         if choice not in MENU:
             print("  Unknown option, try again")
             continue
@@ -169,8 +166,8 @@ def main():
             print(f"  [network error] {err}")
         except (ValueError, OSError, RuntimeError, subprocess.CalledProcessError) as err:
             print(f"  [error] {err}")
-        except KeyboardInterrupt:
-            print("\n  Interrupted")
+        except (KeyboardInterrupt, EOFError):
+            print("\n  Interrupted, back to the menu")
         else:
             print(f"  Done: {title} ({time.perf_counter() - start:.1f}s)")
 

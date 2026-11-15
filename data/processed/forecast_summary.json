@@ -3,7 +3,7 @@
     "arima_order": [
       2,
       0,
-      1
+      2
     ],
     "best_model": "sarima",
     "test_period": [
@@ -42,7 +42,7 @@
     "projected_12m_inflation_pct": {
       "ets": 8.61,
       "naive": 6.65,
-      "sarima": 7.94,
+      "sarima": 9.5,
       "seasonal_naive": 9.24
     }
   },
@@ -50,7 +50,7 @@
     "arima_order": [
       1,
       1,
-      1
+      0
     ],
     "best_model": "gradient_boosting",
     "test_period": [

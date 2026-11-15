@@ -16,8 +16,10 @@ Usage:
 import json
 import tempfile
 import time
+import tracemalloc
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 from src.paths import ROOT, RAW_DIR, PROCESSED_DIR
@@ -31,6 +33,7 @@ RAW_FILES = {
     "base_rate": "base_rate.csv",
     "world_bank": "world_bank_annual.csv",
 }
+CHUNKSIZE = 2_000  # rows per chunk in the chunked-loading comparison
 
 # Exchange-rate regimes used to compare periods (start month, label)
 REGIMES = [
@@ -203,22 +206,97 @@ def measure_memory(df):
             "saved_pct": round((1 - after / before) * 100, 1)}
 
 
-def compare_formats(df, repeats=5):
-    """CSV vs Parquet: file size and average read time for the same table."""
+def _mean_ms(func, repeats):
+    """Average wall time of func() in milliseconds, after one untimed warm-up call.
+
+    The warm-up removes one-off costs (library initialisation, OS file cache) that
+    would otherwise be charged to whichever format happens to be measured first.
+    """
+    func()
+    start = time.perf_counter()
+    for _ in range(repeats):
+        func()
+    return (time.perf_counter() - start) / repeats * 1000
+
+
+def compare_formats(df, repeats=10):
+    """CSV vs Parquet on the same table: file size, write/read time, loaded memory.
+
+    Both readers must return the same typed table, so the CSV reader parses the
+    date columns (Parquet stores types natively and needs no parsing).
+    """
+    date_cols = [c for c in df.columns if pd.api.types.is_datetime64_any_dtype(df[c])]
     results = {}
     with tempfile.TemporaryDirectory() as tmp:
         paths = {"csv": Path(tmp) / "t.csv", "parquet": Path(tmp) / "t.parquet"}
-        df.to_csv(paths["csv"], index=False)
-        df.to_parquet(paths["parquet"], index=False)
-        readers = {"csv": pd.read_csv, "parquet": pd.read_parquet}
+        writers = {"csv": lambda p: df.to_csv(p, index=False),
+                   "parquet": lambda p: df.to_parquet(p, index=False)}
+        readers = {"csv": lambda p: pd.read_csv(p, parse_dates=date_cols),
+                   "parquet": pd.read_parquet}
         for fmt, path in paths.items():
-            start = time.perf_counter()
-            for _ in range(repeats):
-                readers[fmt](path)
-            elapsed_ms = (time.perf_counter() - start) / repeats * 1000
+            write_ms = _mean_ms(lambda: writers[fmt](path), repeats)
+            read_ms = _mean_ms(lambda: readers[fmt](path), repeats)
+            loaded = readers[fmt](path)
             results[fmt] = {"size_kb": round(path.stat().st_size / 1024, 1),
-                            "read_ms": round(elapsed_ms, 2)}
+                            "write_ms": round(write_ms, 2),
+                            "read_ms": round(read_ms, 2),
+                            "memory_kb": round(loaded.memory_usage(deep=True).sum() / 1024, 1),
+                            "types_preserved": bool((loaded.dtypes == df.dtypes).all())}
+    results["parquet_size_saving_pct"] = round(
+        (1 - results["parquet"]["size_kb"] / results["csv"]["size_kb"]) * 100, 1)
+    results["method"] = f"mean of {repeats} runs after one warm-up run; CSV parses dates"
     return results
+
+
+def read_csv_chunked(path, chunksize=CHUNKSIZE):
+    """Read a dated CSV in chunks, typing each chunk before the next is read.
+
+    Each chunk's text dates become datetime64 and floats become float32 at once,
+    so the untyped text of the whole file is never held in memory together.
+    """
+    parts = []
+    for chunk in pd.read_csv(path, chunksize=chunksize):
+        if "date" in chunk.columns:
+            chunk["date"] = pd.to_datetime(chunk["date"])
+        parts.append(optimize_dtypes(chunk))
+    return pd.concat(parts, ignore_index=True)
+
+
+def _peak_kb(func):
+    """Peak traced Python/NumPy allocation (KB) while func runs, and its result."""
+    tracemalloc.start()
+    try:
+        result = func()
+        peak = tracemalloc.get_traced_memory()[1]
+    finally:
+        tracemalloc.stop()
+    return result, round(peak / 1024, 1)
+
+
+def compare_loading(path, chunksize=CHUNKSIZE):
+    """Whole-file read vs chunked read with per-chunk dtype optimisation."""
+    def full_read():
+        df = pd.read_csv(path)
+        df["date"] = pd.to_datetime(df["date"])
+        return df
+
+    full, full_peak = _peak_kb(full_read)
+    chunked, chunked_peak = _peak_kb(lambda: read_csv_chunked(path, chunksize))
+    same_values = (len(full) == len(chunked) and full["date"].equals(chunked["date"])
+                   and bool(np.allclose(full.drop(columns="date"), chunked.drop(columns="date"), rtol=1e-6)))
+    if not same_values:
+        raise ValueError(f"Chunked loading of {path.name} changed the data")
+    return {
+        "file": path.name, "rows": len(full), "chunksize": chunksize,
+        "chunks": -(-len(full) // chunksize),
+        "full_read": {"peak_kb": full_peak, "time_ms": round(_mean_ms(full_read, 5), 2),
+                      "result_kb": round(full.memory_usage(deep=True).sum() / 1024, 1)},
+        "chunked_read": {"peak_kb": chunked_peak,
+                         "time_ms": round(_mean_ms(lambda: read_csv_chunked(path, chunksize), 5), 2),
+                         "result_kb": round(chunked.memory_usage(deep=True).sum() / 1024, 1)},
+        "same_values": same_values,
+        "note": "peak = tracemalloc peak during loading; float32 keeps ~7 significant digits",
+    }
 
 
 def run_preprocessing(save=True):
@@ -255,6 +333,8 @@ def run_preprocessing(save=True):
     quality["usd_kzt_filled_days"] = int(clean["usd_kzt_daily"]["is_filled"].sum())
     quality["memory_optimization"] = {name: measure_memory(df) for name, df in clean.items()}
     quality["csv_vs_parquet_usd_kzt_daily"] = compare_formats(clean["usd_kzt_daily"])
+    quality["chunked_loading"] = {name: compare_loading(RAW_DIR / RAW_FILES[name])
+                                  for name in ("usd_kzt", "brent")}
     if fingerprint(input_paths) != input_version:
         raise ValueError("Raw inputs changed during preprocessing; nothing was published")
 
@@ -281,4 +361,7 @@ if __name__ == "__main__":
         print(f"{table_name:18s} {len(table):6d} rows  {list(table.columns)}")
     print(f"\nUSD/KZT days filled by interpolation: {report['usd_kzt_filled_days']}")
     print("CSV vs Parquet:", report["csv_vs_parquet_usd_kzt_daily"])
+    for source, result in report["chunked_loading"].items():
+        print(f"Chunked loading {source}: peak {result['full_read']['peak_kb']} KB -> "
+              f"{result['chunked_read']['peak_kb']} KB")
     print(f"Saved to {PROCESSED_DIR}")

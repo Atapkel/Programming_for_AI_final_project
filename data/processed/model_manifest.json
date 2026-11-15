@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "stage": "models",
-  "run_id": "7d444a0d2199486299d94eb9fb58854a",
-  "created_at_utc": "2026-11-15T07:25:22.002342+00:00",
-  "python": "3.14.3",
+  "run_id": "5d6b4d84325c4b6caa8720b0f1390319",
+  "created_at_utc": "2026-11-15T15:40:28.399062+00:00",
+  "python": "3.14.2",
   "dependencies": {
     "pandas": "3.1.1",
     "numpy": "2.5.4",
@@ -18,21 +18,23 @@
   },
   "source_sha256": {
     "src/__init__.py": "1ab2f23a833dd4130fb0267dbdbcdd658d557f6dd31a00314ffbb5b088b2ec77",
-    "src/analysis.py": "95f5cf8611d76593810ee525fb06725c49edc2503a763c849ccb4ceae0cc6a8c",
+    "src/analysis.py": "da91fb27e03748d7ca160169d271393d42a907648df50457fc0021cfa7ff381d",
     "src/artifacts.py": "848a268161219650af2c79b19f623ca0ed0992f2ea50e5e592e2ab6e6c2d61a1",
-    "src/dashboard_data.py": "13d5ef22b43772140b0e124b6965f1ab96f7ac2621e6760ba20867f7a11fa124",
+    "src/dashboard_data.py": "001b2ae247a14ea2f1defe4f827152d9d5f2dfb6c9a1aab1e712980d8f319c62",
     "src/data_loader.py": "4928cfe77fbf67b6b8fb78eb8ed1d5353ad52ba3c1da940e4d9fc1ed1fbdd931",
     "src/database.py": "ced2b8f09cc48a3cdc36c8115ef2b1582c43a298d18c60750568ecaef3a08920",
-    "src/models.py": "44d871d0f5f97809a2b48c4097a7be4d37bb728b89b7a51563c0ab16138ff39b",
+    "src/evaluation.py": "10694a372ed7839a22d443eead824c348899af6a2c9b9d6b76fecc471c54e9a9",
+    "src/forecasting.py": "05d68bd885f09d22493a62c62be31422973f647e13ee98cc0001660282b3f799",
+    "src/models.py": "7ab1e3a81537e174dc22c992c7024f1cecb3813b8598cfe363cd8534726febf4",
     "src/paths.py": "a72ca9ba2d7d2d8a55856330b7c3a704af85ca7d711a32bbe236e07dedc38b29",
-    "src/preprocessing.py": "af56f1e0d275bbf17ad48ef0d4afffa2247d0488addf1f6c3b658bca03bbe701",
+    "src/preprocessing.py": "87a159243038b911d47f2368a90f635e407ec0f9dd120e2f51f5ff1c9d0b7162",
     "src/validation.py": "1fbd53b2d6a3135415d92d0bc4a4a6bfe9f5898a141d87555a45a9bdccc2b838",
-    "main.py": "6aae5c00e4a5099e4fc9a6f4970dcd07d51f46b55a5d9213c41ce90b917aac84"
+    "main.py": "93df67d6bd4dd81d459af1b7bbb0ec8b74fd3b91e311ff4ab735fdc6e7aa9b05"
   },
   "inputs": {
     "model_input.parquet": "e6ee2133ec8a37f7cdda974af097586fcba427ab93c1086639c9a6c0df98b30c",
     "processed/monthly_forecasting.parquet": "e6ee2133ec8a37f7cdda974af097586fcba427ab93c1086639c9a6c0df98b30c",
-    "processed/preprocessing_manifest.json": "30b4f1f6812f898cb116673c1661541255bfec34f43df5b098adc900d8c253f5",
+    "processed/preprocessing_manifest.json": "e12a880c7ce13ef686bc29fd39410753f34c0ce8aa48a8794bab0b3c2545251f",
     "raw/base_rate.csv": "fcf54fdbd58b1558cab4bdee5a02983998d03ed6ad2606f52501d8c485859999",
     "raw/brent_daily.csv": "0ba0fd883c2b60a6893aca9d04da8b58a0a5aac64cf08c54d81253c9b216a6e6",
     "raw/cpi_monthly.csv": "73dec6452491010b34c829f961d302da9b8a34fd36b6afdec9e8ad859fbacedf",
@@ -40,13 +42,13 @@
     "raw/world_bank_annual.csv": "0f4e526877a21481cd0efba7b6e8a54973c72d81ef1f320c70ae721eb099a730"
   },
   "outputs": {
-    "model_diagnostics.json": "be166e006385a9a1675909a1ba7fcce6a6cf2242227c45919682366c02bddcb5",
-    "forecast_summary.json": "4f8aff5c381c8de3d5e186ce6db566375096e2b86e8a71e62d186801939dfeed",
-    "errors_by_year.csv": "ac823a4b00887af96208291acd4a29df5f35b5e51bc490541307361c7c05ac67",
+    "backtest_predictions.parquet": "22df81c3768b1b83a461357cd8ec4810c701475303acb7cbc9f0c602aca02bdc",
+    "errors_by_year.csv": "10d3cceb9645fc2413e50f2649e5c5759a18ed9192135ea72296d1cf9c848111",
+    "model_metrics.csv": "745f7cd9449969fee94674ef4854468db3b504e3df502486b57c906072de42be",
+    "forecast_summary.json": "5930d5375d6adfe78fbc6ae15d632cf001a9abcd3912e7de47e28950da9fb7ea",
     "model_input.parquet": "e6ee2133ec8a37f7cdda974af097586fcba427ab93c1086639c9a6c0df98b30c",
-    "backtest_predictions.parquet": "c6d9b92250c41fc67932dc01d16df32ddc21f7908c6aa6d1808989ccc879ac71",
-    "forecasts.parquet": "1627db6fb58d9828623840415779cdf712f4fa6ce9f9c834bd678699df14cfd3",
-    "model_metrics.csv": "1751dc5886edfe178801fe71e442ced2d15d99f2e1b73785d1e3bdf4cdf30eaa"
+    "model_diagnostics.json": "304b5ec010da162a7acc8e197ce439b2444c1bc8e37256731e500ca5b0c6c741",
+    "forecasts.parquet": "0a017c0e06e423fc69229f370709131e7aff94ea5b7af08f1d9a26d5e6306718"
   },
   "configuration": {
     "inflation_mom": {
